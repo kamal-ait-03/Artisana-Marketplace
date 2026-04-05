@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--color-primary-base);
+  --color-secondary: var(--color-secondary-base);
+  --color-accent: var(--color-accent-base);
+  --color-bg: var(--color-bg-base);
+  --color-text: var(--color-text-base);
+  --color-muted: var(--color-muted-base);
+  --color-card: var(--color-card-base);
+
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Public Sans', sans-serif;
+}
+
+:root {
+  /* ── Sky Blue & White Theme based on Dribbble layout ── */
+  --color-primary-base:   #00B4D8;   /* Sky Blue (Cyan-ish) */
+  --color-secondary-base: #0077B6;   /* Deep Sky Blue */
+  --color-accent-base:    #CAF0F8;   /* Very Light Blue */
+  --color-bg-base:        #FFFFFF;   /* Pure White background */
+  --color-text-base:      #1E293B;   /* Slate/Navy text */
+  --color-muted-base:     #64748B;   /* Soft grey text */
+  --color-card-base:      #F8FAFC;   /* Light Sky Blue-ish white for cards */
+  --color-red-base:       #C1272D;   /* Moroccan Flag Red */
+  
+  --radius-xl: 32px;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+}
+
+@layer base {
+  body {
+    background-color: #FFFFFF;
+    color: var(--color-text-base);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 { 
+    font-family: var(--font-heading); 
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .shadow-soft {
+    box-shadow: 0 4px 30px rgba(0, 180, 216, 0.08);
+  }
+  
+  .shadow-card {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  }
+
+  .bg-zellige {
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2300B4D8' stroke-width='0.6' stroke-opacity='0.1'%3E%3Cpath d='M40 0 L55 15 L40 30 L25 15 Z'/%3E%3Cpath d='M40 30 L55 45 L40 60 L25 45 Z'/%3E%3Cpath d='M0 40 L15 25 L30 40 L15 55 Z'/%3E%3Cpath d='M50 40 L65 25 L80 40 L65 55 Z'/%3E%3Cpath d='M40 0 L80 40 L40 80 L0 40 Z'/%3E%3Ccircle cx='40' cy='40' r='10'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Define base button styles directly to avoid @apply issues with unknown aliases */
+  .btn-pill {
+    border-radius: 9999px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-weight: 600;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    /* Manually compose or apply only built-in tailwind classes */
+    border-radius: 9999px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-weight: 600;
+    background-color: var(--color-primary-base);
+    color: white;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-secondary-base);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .btn-outline {
+    border-radius: 9999px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-weight: 600;
+    border-width: 2px;
+    border-color: var(--color-primary-base);
+    color: var(--color-primary-base);
+    background-color: transparent;
+  }
+  .btn-outline:hover {
+    background-color: var(--color-primary-base);
+    color: white;
+  }
+
+  .page-enter {  animation: fade-in 0.6s ease-out; }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}

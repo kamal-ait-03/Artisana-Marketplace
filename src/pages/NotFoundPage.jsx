@@ -1,0 +1,34 @@
+import { Link } from 'react-router-dom';
+
+const NotFoundPage = () => {
+  return (
+    <div className="bg-[var(--color-bg)] min-h-[80vh] flex flex-col items-center justify-center text-center px-4 pt-20">
+      <div className="relative mb-8">
+        {/* Moroccan themed 404 illustration text */}
+        <h1 className="font-heading text-[150px] md:text-[200px] font-bold text-[var(--color-primary)] opacity-20 leading-none">
+          404
+        </h1>
+        <div className="absolute inset-0 flex items-center justify-center">
+           <span className="text-6xl">🐪</span>
+        </div>
+      </div>
+      
+      <h2 className="font-heading text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">
+        Oups! Vous vous êtes perdu dans le souk.
+      </h2>
+      
+      <p className="text-gray-600 font-body max-w-md mx-auto mb-8">
+        La page que vous recherchez semble introuvable. Elle a peut-être été déplacée ou n'a jamais existé.
+      </p>
+      
+      <Link 
+        to="/" 
+        className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-lg font-bold hover:bg-[#6b3510] transition-colors shadow-warm"
+      >
+        Retour à l'accueil
+      </Link>
+    </div>
+  );
+};
+
+export default NotFoundPage;
