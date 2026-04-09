@@ -25,10 +25,10 @@ const ArtisansPage = () => {
     : processedArtisans.filter(a => a.city === selectedCity);
 
   return (
-    <div className="bg-slate-50 min-h-screen">
+    <div className="bg-slate-50 min-h-screen pt-20">
 
       {/* Hero */}
-      <section className="relative bg-[#00BCD4] text-white pt-32 pb-20 overflow-hidden">
+      <section className="relative bg-[#00BCD4] text-white pt-12 pb-20 overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-zellige pointer-events-none" />
         <div className="container mx-auto px-4 md:px-8 relative z-10 text-center">
           <span className="font-bold text-white/80 tracking-widest uppercase text-xs mb-4 block">

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Phone, MapPin, Book, Scissors, Shirt, Leaf, LayoutGrid } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Phone, MapPin, Book, Scissors, Shirt, Leaf, LayoutGrid, LayoutDashboard } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { categories } from '../data/mockData';
@@ -199,6 +199,12 @@ const Navbar = () => {
 
                     {/* Right Utility Icons */}
                     <div className="flex items-center gap-4 lg:gap-8">
+                        <Link 
+                            to="/become-seller"
+                            className="hidden md:flex items-center justify-center bg-[#00BCD4] text-white px-5 py-2.5 rounded-full font-black text-xs uppercase tracking-widest shadow-lg hover:bg-[#0097a7] transition-all hover:scale-105 active:scale-95"
+                        >
+                            Become a Seller
+                        </Link>
                         <div className="relative hidden lg:block">
                             <button 
                                 onClick={() => setIsUserDropOpen(!isUserDropOpen)}
@@ -213,6 +219,12 @@ const Navbar = () => {
                                         <p className="text-sm font-black text-slate-900 truncate">{user ? user.name : 'Welcome Friend'}</p>
                                         <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{role || 'Anonymous'}</p>
                                     </div>
+                                    {user && role === 'artisan' && (
+                                        <Link to="/dashboard" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold border-b border-slate-50 mb-1">
+                                            <LayoutDashboard size={18} className="text-[#00B4D8]" /> 
+                                            Tableau de Bord
+                                        </Link>
+                                    )}
                                     {user ? (
                                         <button onClick={handleLogout} className="w-full text-left px-6 py-2.5 text-sm text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors font-bold">
                                             <LogOut size={18} /> Sign Out
@@ -263,7 +275,7 @@ const Navbar = () => {
                             return (
                                 <Link 
                                     key={cat.id} 
-                                    to={`/catalog?category=${cat.id}`}
+                                    to={`/catalogue?category=${cat.id}`}
                                     onClick={() => setIsCategoryMenuOpen(false)}
                                     className={`group flex flex-col items-center text-center p-8 rounded-[40px] transition-all duration-500 border border-transparent hover:border-[#00B4D8]/20 hover:shadow-xl ${meta?.bg || 'bg-slate-50'}`}
                                 >
@@ -294,7 +306,7 @@ const Navbar = () => {
                             {categories.map((cat) => (
                                 <Link 
                                     key={cat.id} 
-                                    to={`/catalog?category=${cat.id}`}
+                                    to={`/catalogue?category=${cat.id}`}
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl group shadow-sm active:bg-[#CAF0F8]"
                                 >
@@ -312,6 +324,16 @@ const Navbar = () => {
                     <Link to="/artisans" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
                         Nos Artisans <ChevronDown size={20} className="-rotate-90 text-slate-300" />
                     </Link>
+
+                    {role === 'artisan' ? (
+                        <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-[#00B4D8] flex items-center justify-between">
+                            Dashboard <ChevronDown size={20} className="-rotate-90" />
+                        </Link>
+                    ) : (
+                        <Link to="/become-seller" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
+                            Become a Seller <ChevronDown size={20} className="-rotate-90 text-slate-300" />
+                        </Link>
+                    )}
 
                     <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
                         About Us <ChevronDown size={20} className="-rotate-90 text-slate-300" />
