@@ -23,10 +23,10 @@ const HomePage = () => {
     );
 
     return (
-        <div className="bg-white min-h-screen overflow-x-hidden pt-10">
+        <div className="bg-white min-h-screen overflow-x-hidden pt-20">
             
             {/* ── HERO SECTION (Dribbble Layout) ── */}
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white">
+            <section className="relative pt-12 pb-20 lg:pt-24 lg:pb-32 overflow-hidden bg-white">
                 {/* Background Decor (Zellige & Circles) */}
                 <ZelligeBackground className="bg-[length:200px_200px]" />
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-zellige opacity-10 pointer-events-none" />
