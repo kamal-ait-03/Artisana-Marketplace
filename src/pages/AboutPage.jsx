@@ -58,10 +58,10 @@ const milestones = [
 
 const AboutPage = () => {
   return (
-    <div className="bg-[var(--color-bg)] min-h-screen">
+    <div className="bg-[var(--color-bg)] min-h-screen pt-20">
 
       {/* Hero */}
-      <section className="relative bg-[var(--color-primary)] text-white pt-28 pb-24 overflow-hidden">
+      <section className="relative bg-[var(--color-primary)] text-white pt-8 pb-24 overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-zellige pointer-events-none" />
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <div className="max-w-3xl">

@@ -23,10 +23,10 @@ const HomePage = () => {
     );
 
     return (
-        <div className="bg-white min-h-screen overflow-x-hidden pt-10">
+        <div className="bg-white min-h-screen overflow-x-hidden pt-20">
             
             {/* ── HERO SECTION (Dribbble Layout) ── */}
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white">
+            <section className="relative pt-12 pb-20 lg:pt-24 lg:pb-32 overflow-hidden bg-white">
                 {/* Background Decor (Zellige & Circles) */}
                 <ZelligeBackground className="bg-[length:200px_200px]" />
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-zellige opacity-10 pointer-events-none" />
@@ -51,7 +51,7 @@ const HomePage = () => {
                             </p>
                             
                             <div className="flex flex-col sm:flex-row items-center gap-4">
-                                <Link to="/catalog" className="btn-primary w-full sm:w-auto text-center shadow-lg hover:translate-y-[-2px]">
+                                <Link to="/catalogue" className="btn-primary w-full sm:w-auto text-center shadow-lg hover:translate-y-[-2px]">
                                     Shop Now
                                 </Link>
                                 <Link to="/about" className="btn-outline w-full sm:w-auto text-center hover:translate-y-[-2px]">
@@ -123,7 +123,7 @@ const HomePage = () => {
                             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Focus Categories</h2>
                             <p className="text-slate-500 font-medium">From the soul of Poetry to the craftsmanship of Leather and Carpets.</p>
                         </div>
-                        <Link to="/catalog" className="text-[#00B4D8] font-bold flex items-center gap-2 hover:translate-x-2 transition-transform">
+                        <Link to="/catalogue" className="text-[#00B4D8] font-bold flex items-center gap-2 hover:translate-x-2 transition-transform">
                             See All Collections <ArrowRight size={18} />
                         </Link>
                     </div>
@@ -132,7 +132,7 @@ const HomePage = () => {
                         {categories.map((cat) => (
                             <Link 
                                 key={cat.id} 
-                                to={`/catalog?category=${cat.id}`}
+                                to={`/catalogue?category=${cat.id}`}
                                 className="group relative bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:border-[#00B4D8]/20 transition-all duration-300 flex flex-col items-center text-center gap-4"
                             >
                                 <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-3xl transition-colors group-hover:bg-[#CAF0F8]">
