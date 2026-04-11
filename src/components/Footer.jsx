@@ -61,7 +61,7 @@ const Footer = () => {
                         </h4>
                         <nav className="flex flex-col gap-4">
                             <Link to="/" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Home</Link>
-                            <Link to="/catalogue" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Products</Link>
+                            <Link to="/catalog" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Products</Link>
                             <Link to="/artisans" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Artisans</Link>
                             <Link to="/about" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Our Story</Link>
                         </nav>
@@ -74,10 +74,10 @@ const Footer = () => {
                             <span className="absolute left-0 -bottom-1.5 w-8 h-1 bg-[#00B4D8] rounded-full" />
                         </h4>
                         <nav className="flex flex-col gap-4">
-                            <Link to="/catalogue?category=carpets" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Carpets</Link>
-                            <Link to="/catalogue?category=pottery" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Pottery</Link>
-                            <Link to="/catalogue?category=leather" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Leather Goods</Link>
-                            <Link to="/catalogue?category=clothing" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Clothing</Link>
+                            <Link to="/catalog?category=carpets" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Carpets</Link>
+                            <Link to="/catalog?category=pottery" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Pottery</Link>
+                            <Link to="/catalog?category=leather" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Leather Goods</Link>
+                            <Link to="/catalog?category=clothing" className="text-slate-500 font-medium hover:text-[#00B4D8] transition-colors">Clothing</Link>
                         </nav>
                     </div>
 

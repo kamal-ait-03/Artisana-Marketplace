@@ -14,18 +14,18 @@ const NotFoundPage = () => {
       </div>
       
       <h2 className="font-heading text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">
-        Oups! Vous vous êtes perdu dans le souk.
+        Oops! You got lost in the souk.
       </h2>
-      
+
       <p className="text-gray-600 font-body max-w-md mx-auto mb-8">
-        La page que vous recherchez semble introuvable. Elle a peut-être été déplacée ou n'a jamais existé.
+        The page you are looking for seems to be missing. It might have been moved or never existed.
       </p>
-      
-      <Link 
-        to="/" 
+
+      <Link
+        to="/"
         className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-lg font-bold hover:bg-[#6b3510] transition-colors shadow-warm"
       >
-        Retour à l'accueil
+        Back to Home
       </Link>
     </div>
   );

@@ -42,7 +42,7 @@ const LoginPage = () => {
       </div>
 
       <div className="w-full max-w-md bg-white rounded-2xl shadow-warm border border-orange-50 p-8 relative z-10 page-enter">
-        <h2 className="font-heading text-2xl font-bold text-center mb-8">Connexion</h2>
+        <h2 className="font-heading text-2xl font-bold text-center mb-8">Login</h2>
         
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -65,8 +65,8 @@ const LoginPage = () => {
           
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
-              <a href="#" className="flex text-xs text-[var(--color-primary)] hover:underline">Mot de passe oublié ?</a>
+              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <a href="#" className="flex text-xs text-[var(--color-primary)] hover:underline">Password oublié ?</a>
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -88,7 +88,7 @@ const LoginPage = () => {
             disabled={isLoading}
             className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-[#6b3510] transition-colors shadow-sm disabled:opacity-70 mt-4"
           >
-            {isLoading ? <Loader2 className="animate-spin" size={20} /> : 'Se connecter'}
+            {isLoading ? <Loader2 className="animate-spin" size={20} /> : 'Sign In'}
           </button>
         </form>
 
@@ -97,7 +97,7 @@ const LoginPage = () => {
             <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Ou continuer avec</span>
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
           </div>
         </div>
 
@@ -114,7 +114,7 @@ const LoginPage = () => {
         <p className="text-center text-sm text-gray-600 mt-8">
           Pas encore de compte ?{' '}
           <Link to="/register" className="font-bold text-[var(--color-primary)] hover:underline">
-            Créer un compte
+            Create an Account
           </Link>
         </p>
       </div>

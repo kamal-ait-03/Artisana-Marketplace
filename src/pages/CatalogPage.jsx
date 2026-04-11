@@ -1,3 +1,4 @@
+import { useCurrency } from '../context/CurrencyContext';
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
@@ -5,6 +6,7 @@ import { mockProducts, categories as initialCategories, artisans } from '../data
 import { Filter, X, SlidersHorizontal, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 
 const CatalogPage = () => {
+  const { formatPrice, currency } = useCurrency();
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get('category');
 
@@ -23,7 +25,16 @@ const CatalogPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  const cities = ['Safi', 'Marrakech', 'Fès', 'Meknès', 'Rabat', 'Casablanca'];
+  const cities = ['Safi', 'Marrakech', 'Fez', 'Meknès', 'Rabat', 'Casablanca'];
+
+  useEffect(() => {
+    const category = searchParams.get('category');
+    if (category) {
+      setSelectedCategories([category]);
+    } else {
+      setSelectedCategories([]);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     // Simulate API fetch
@@ -99,19 +110,19 @@ const CatalogPage = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h3 className="font-heading text-xl font-bold flex items-center gap-2">
-          <Filter size={20} className="text-[var(--color-primary)]" /> Filtres
+          <Filter size={20} className="text-[var(--color-primary)]" /> Filters
         </h3>
         <button 
           onClick={resetFilters}
           className="text-sm font-body text-gray-500 hover:text-[var(--color-primary)] underline"
         >
-          Réinitialiser
+          Reset
         </button>
       </div>
 
       {/* Categories */}
       <div>
-        <h4 className="font-accent text-sm font-bold text-gray-800 tracking-wider mb-4 uppercase">Catégories</h4>
+        <h4 className="font-accent text-sm font-bold text-gray-800 tracking-wider mb-4 uppercase">Categories</h4>
         <div className="space-y-3">
           {initialCategories.map(cat => (
             <label key={cat.id} className="flex items-center gap-3 cursor-pointer group" onClick={() => handleCategoryChange(cat.id)}>
@@ -130,7 +141,7 @@ const CatalogPage = () => {
 
       {/* Price */}
       <div>
-        <h4 className="font-accent text-sm font-bold text-gray-800 tracking-wider mb-4 uppercase">Prix Max</h4>
+        <h4 className="font-accent text-sm font-bold text-gray-800 tracking-wider mb-4 uppercase">Max Price</h4>
         <input 
           type="range" 
           min="0" 
@@ -141,14 +152,14 @@ const CatalogPage = () => {
           className="w-full accent-[var(--color-primary)]"
         />
         <div className="flex justify-between text-sm text-gray-600 mt-2 font-medium">
-          <span>0 MAD</span>
-          <span className="text-[var(--color-primary)] font-bold">{priceRange} MAD</span>
+          <span>{formatPrice(0)}</span>
+          <span className="text-[var(--color-primary)] font-bold">{formatPrice(priceRange)}</span>
         </div>
       </div>
 
       {/* Cities */}
       <div>
-        <h4 className="font-accent text-sm font-bold text-gray-800 tracking-wider mb-4 uppercase">Villes (Artisans)</h4>
+        <h4 className="font-accent text-sm font-bold text-gray-800 tracking-wider mb-4 uppercase">Cities (Artisans)</h4>
         <div className="space-y-3">
           {cities.map(city => (
             <label key={city} className="flex items-center gap-3 cursor-pointer group" onClick={() => handleCityChange(city)}>
@@ -167,7 +178,7 @@ const CatalogPage = () => {
 
       {/* Artisans */}
       <div>
-        <h4 className="font-accent text-sm font-bold text-gray-800 tracking-wider mb-4 uppercase">Filtrer par Artisan</h4>
+        <h4 className="font-accent text-sm font-bold text-gray-800 tracking-wider mb-4 uppercase">Filter by Artisan</h4>
         <div className="space-y-3">
           {artisans.map(artisan => (
             <label key={artisan.id} className="flex items-center gap-3 cursor-pointer group" onClick={() => handleArtisanChange(artisan.id)}>
@@ -195,16 +206,16 @@ const CatalogPage = () => {
           onClick={() => setIsMobileFiltersOpen(true)}
           className="flex items-center gap-2 font-medium text-[var(--color-text)]"
         >
-          <SlidersHorizontal size={18} /> Filtrer
+          <SlidersHorizontal size={18} /> Filter
         </button>
-        <span className="text-sm text-gray-500">{filteredProducts.length} produits</span>
+        <span className="text-sm text-gray-500">{filteredProducts.length} products</span>
       </div>
 
       {/* Mobile Filter Drawer */}
       <div className={`fixed inset-0 bg-black/50 z-50 transition-opacity lg:hidden ${isMobileFiltersOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <div className={`absolute top-0 left-0 bottom-0 w-4/5 max-w-sm bg-white p-6 shadow-xl transition-transform transform ${isMobileFiltersOpen ? 'translate-x-0' : '-translate-x-full'} overflow-y-auto`}>
           <div className="flex justify-between items-center mb-8">
-            <h2 className="font-heading text-2xl font-bold">Filtres</h2>
+            <h2 className="font-heading text-2xl font-bold">Filters</h2>
             <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2 bg-gray-100 rounded-full">
               <X size={20} />
             </button>
@@ -214,7 +225,7 @@ const CatalogPage = () => {
             onClick={() => setIsMobileFiltersOpen(false)}
             className="w-full mt-8 bg-[var(--color-primary)] text-white py-3 rounded-md font-medium"
           >
-            Afficher ({filteredProducts.length})
+            Show ({filteredProducts.length})
           </button>
         </div>
       </div>
@@ -223,8 +234,8 @@ const CatalogPage = () => {
         
         {/* Page Header */}
         <div className="mb-10 text-center">
-          <h1 className="font-heading text-4xl md:text-5xl font-bold text-[var(--color-text)] mb-4">Notre Catalogue</h1>
-          <p className="max-w-2xl mx-auto text-gray-600">Découvrez l'ensemble de notre collection d'artisanat marocain, triée sur le volet pour vous offrir la meilleure qualité.</p>
+          <h1 className="font-heading text-4xl md:text-5xl font-bold text-[var(--color-text)] mb-4">Our Catalog</h1>
+          <p className="max-w-2xl mx-auto text-gray-600">Discover the entire collection of Moroccan craftsmanship, carefully selected to offer you the best quality.</p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-10">
@@ -239,18 +250,18 @@ const CatalogPage = () => {
             
             {/* Top Bar */}
             <div className="hidden lg:flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-orange-50 mb-8">
-              <span className="text-gray-600 font-medium">{filteredProducts.length} produits trouvés</span>
+              <span className="text-gray-600 font-medium">{filteredProducts.length} products found</span>
               <div className="flex items-center gap-3">
-                <label className="text-sm text-gray-500">Trier par:</label>
+                <label className="text-sm text-gray-500">Sort by:</label>
                 <select 
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="border border-gray-200 rounded-md py-1.5 px-3 bg-[var(--color-bg)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
                 >
-                  <option value="newest">Nouveautés</option>
-                  <option value="price-asc">Prix croissant</option>
-                  <option value="price-desc">Prix décroissant</option>
-                  <option value="popular">Popularité</option>
+                  <option value="newest">Newest</option>
+                  <option value="price-asc">Ascending Price</option>
+                  <option value="price-desc">Descending Price</option>
+                  <option value="popular">Popularity</option>
                 </select>
               </div>
             </div>
@@ -262,10 +273,10 @@ const CatalogPage = () => {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="w-full border border-gray-200 rounded-md py-2 px-3 bg-white shadow-sm focus:outline-none"
                 >
-                  <option value="newest">Trier: Nouveautés</option>
-                  <option value="price-asc">Trier: Prix croissant</option>
-                  <option value="price-desc">Trier: Prix décroissant</option>
-                  <option value="popular">Trier: Popularité</option>
+                  <option value="newest">Trier: Newest</option>
+                  <option value="price-asc">Trier: Ascending Price</option>
+                  <option value="price-desc">Trier: Descending Price</option>
+                  <option value="popular">Sort: Popularity</option>
               </select>
             </div>
 
@@ -287,13 +298,13 @@ const CatalogPage = () => {
             ) : filteredProducts.length === 0 ? (
               <div className="bg-white p-12 rounded-xl text-center shadow-sm">
                 <div className="text-5xl mb-4">🐪</div>
-                <h3 className="font-heading text-2xl font-bold text-[var(--color-text)] mb-2">Aucun produit trouvé</h3>
-                <p className="text-gray-500 mb-6">Essayez de modifier vos filtres pour voir plus de résultats.</p>
+                <h3 className="font-heading text-2xl font-bold text-[var(--color-text)] mb-2">No products found</h3>
+                <p className="text-gray-500 mb-6">Try modifying your filters to see more results.</p>
                 <button 
                   onClick={resetFilters}
                   className="bg-[var(--color-primary)] text-white px-6 py-2 rounded font-medium"
                 >
-                  Réinitialiser les filtres
+                  Reset les filtres
                 </button>
               </div>
             ) : (

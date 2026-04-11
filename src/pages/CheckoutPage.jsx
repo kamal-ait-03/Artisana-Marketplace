@@ -1,3 +1,4 @@
+import { useCurrency } from '../context/CurrencyContext';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
@@ -5,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { Check, ChevronLeft, CreditCard } from 'lucide-react';
 
 const CheckoutPage = () => {
+  const { formatPrice, currency } = useCurrency();
   const { cartItems, total, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     if (cartItems.length === 0 && step !== 4) {
-      navigate('/panier');
+      navigate('/cart');
     }
   }, [cartItems, navigate, step]);
 
@@ -69,7 +71,7 @@ const CheckoutPage = () => {
             {step > item ? <Check size={16} /> : item}
           </div>
           <span className={`text-xs mt-2 font-medium hidden sm:block ${step >= item ? 'text-[var(--color-primary)]' : 'text-gray-400'}`}>
-            {item === 1 ? 'Contact' : item === 2 ? 'Livraison' : 'Paiement'}
+            {item === 1 ? 'Contact' : item === 2 ? 'Shipping' : 'Payment'}
           </span>
         </div>
       ))}
@@ -83,14 +85,14 @@ const CheckoutPage = () => {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check size={40} className="text-green-600" />
           </div>
-          <h2 className="font-heading text-3xl font-bold text-[var(--color-text)] mb-2">Commande Confirmée !</h2>
-          <p className="text-gray-500 mb-6">Merci pour votre achat. Votre numéro de commande est le <span className="font-bold text-[var(--color-text)]">ART-{Math.floor(Math.random() * 100000)}</span>.</p>
-          <p className="text-sm text-gray-500 mb-8 border-t border-gray-100 pt-6">Un email de confirmation vous sera envoyé dans quelques instants.</p>
+          <h2 className="font-heading text-3xl font-bold text-[var(--color-text)] mb-2">Order Confirmée !</h2>
+          <p className="text-gray-500 mb-6">Thank you for your purchase. Your order number is <span className="font-bold text-[var(--color-text)]">ART-{Math.floor(Math.random() * 100000)}</span>.</p>
+          <p className="text-sm text-gray-500 mb-8 border-t border-gray-100 pt-6">A confirmation email will be sent to you shortly.</p>
           <Link 
-            to="/catalogue" 
+            to="/catalog" 
             className="block w-full bg-[var(--color-primary)] text-white py-3 rounded-lg font-medium hover:bg-[#6b3510] transition-colors"
           >
-            Retourner au catalogue
+            Back to catalog
           </Link>
         </div>
       </div>
@@ -105,8 +107,8 @@ const CheckoutPage = () => {
           
           {/* Main Checkout Area */}
           <div className="lg:w-2/3">
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 hover:text-[var(--color-primary)] transition-colors w-fit cursor-pointer" onClick={() => step > 1 ? setStep(step - 1) : navigate('/panier')}>
-              <ChevronLeft size={16} /> {step === 1 ? 'Retour au panier' : 'Étape précédente'}
+            <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 hover:text-[var(--color-primary)] transition-colors w-fit cursor-pointer" onClick={() => step > 1 ? setStep(step - 1) : navigate('/cart')}>
+              <ChevronLeft size={16} /> {step === 1 ? 'Back to cart' : 'Previous Step'}
             </div>
 
             <div className="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-orange-50">
@@ -117,14 +119,14 @@ const CheckoutPage = () => {
                 {/* Step 1: Info */}
                 {step === 1 && (
                   <div className="space-y-6">
-                    <h2 className="font-heading text-2xl font-bold mb-4">Vos informations</h2>
+                    <h2 className="font-heading text-2xl font-bold mb-4">Your Information</h2>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
                         <input type="text" required name="firstName" value={formData.firstName} onChange={handleChange} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
                         <input type="text" required name="lastName" value={formData.lastName} onChange={handleChange} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all" />
                       </div>
                     </div>
@@ -134,7 +136,7 @@ const CheckoutPage = () => {
                         <input type="email" required name="email" value={formData.email} onChange={handleChange} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                         <input type="tel" required name="phone" value={formData.phone} onChange={handleChange} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all" />
                       </div>
                     </div>
@@ -144,24 +146,24 @@ const CheckoutPage = () => {
                 {/* Step 2: Address */}
                 {step === 2 && (
                   <div className="space-y-6">
-                    <h2 className="font-heading text-2xl font-bold mb-4">Adresse de livraison</h2>
+                    <h2 className="font-heading text-2xl font-bold mb-4">Delivery Address</h2>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Adresse complète</label>
-                      <input type="text" required name="address" value={formData.address} onChange={handleChange} placeholder="N° de rue, appartement, etc." className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all" />
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Full Address</label>
+                      <input type="text" required name="address" value={formData.address} onChange={handleChange} placeholder="Street number, apartment, etc." className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all" />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
                         <input type="text" required name="city" value={formData.city} onChange={handleChange} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Code Postal</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
                         <input type="text" required name="zip" value={formData.zip} onChange={handleChange} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all" />
                       </div>
                     </div>
                     <div>
-                       <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
-                       <input type="text" disabled value="Maroc" className="w-full border border-gray-300 bg-gray-50 text-gray-500 rounded-md py-2 px-3 cursor-not-allowed" />
+                       <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                       <input type="text" disabled value="Morocco" className="w-full border border-gray-300 bg-gray-50 text-gray-500 rounded-md py-2 px-3 cursor-not-allowed" />
                     </div>
                   </div>
                 )}
@@ -169,24 +171,24 @@ const CheckoutPage = () => {
                 {/* Step 3: Payment */}
                 {step === 3 && (
                   <div className="space-y-6">
-                    <h2 className="font-heading text-2xl font-bold mb-4">Paiement</h2>
+                    <h2 className="font-heading text-2xl font-bold mb-4">Payment</h2>
                     
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
                        <div className="flex items-center gap-3 mb-4">
                           <input type="radio" checked readOnly className="accent-[var(--color-primary)] w-4 h-4" />
                           <label className="font-medium text-gray-800 flex items-center gap-2">
-                             Carte Bancaire <CreditCard size={18} className="text-gray-500" />
+                             Credit Card <CreditCard size={18} className="text-gray-500" />
                           </label>
                        </div>
                        
                        <div className="space-y-4">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Numéro de carte</label>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Card Number</label>
                             <input type="text" required name="cardNumber" value={formData.cardNumber} onChange={handleChange} placeholder="1234 5678 9101 1121" maxLength="19" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all text-sm" />
                           </div>
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <label className="block text-xs font-medium text-gray-600 mb-1">Date d'expiration</label>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">Expiration Date</label>
                               <input type="text" required name="expDate" value={formData.expDate} onChange={handleChange} placeholder="MM/AA" maxLength="5" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all text-sm" />
                             </div>
                             <div>
@@ -200,7 +202,7 @@ const CheckoutPage = () => {
                     <div className="bg-white border rounded-lg p-4 opacity-50 cursor-not-allowed">
                        <div className="flex items-center gap-3">
                           <input type="radio" disabled className="w-4 h-4" />
-                          <label className="font-medium text-gray-500">PayPal (Indisponible)</label>
+                          <label className="font-medium text-gray-500">PayPal (Unavailable)</label>
                        </div>
                     </div>
 
@@ -209,7 +211,7 @@ const CheckoutPage = () => {
 
                 <div className="mt-10">
                   <button type="submit" className="w-full sm:w-auto px-8 py-3 bg-[var(--color-primary)] text-white rounded-lg font-medium hover:bg-[#6b3510] transition-colors float-right flex items-center justify-center gap-2">
-                    {step === 3 ? 'Confirmer et Payer' : 'Étape Suivante'}
+                    {step === 3 ? 'Confirm and Pay' : 'Next Step'}
                   </button>
                   <div className="clear-both"></div>
                 </div>
@@ -224,7 +226,7 @@ const CheckoutPage = () => {
               <div className="absolute top-0 right-0 left-0 bottom-0 opacity-5 bg-zellige pointer-events-none"></div>
               
               <div className="relative z-10">
-                <h2 className="font-heading text-xl font-bold border-b border-gray-700 pb-4 mb-6">Récapitulatif</h2>
+                <h2 className="font-heading text-xl font-bold border-b border-gray-700 pb-4 mb-6">Summary</h2>
                 
                 <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                   {cartItems.map(item => (
@@ -237,7 +239,7 @@ const CheckoutPage = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm line-clamp-2">{item.product.name}</p>
-                        <p className="text-gray-400 text-xs mt-1">{item.product.price} MAD</p>
+                        <p className="text-gray-400 text-xs mt-1">{formatPrice(item.product.price)}</p>
                       </div>
                     </div>
                   ))}
@@ -245,12 +247,12 @@ const CheckoutPage = () => {
 
                 <div className="border-t border-gray-700 pt-4 space-y-3 font-body text-sm text-gray-300">
                   <div className="flex justify-between">
-                    <span>Sous-total</span>
-                    <span className="text-white">{total} MAD</span>
+                    <span>Subtotal</span>
+                    <span className="text-white">{formatPrice(total)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Livraison (Maroc)</span>
-                    <span className="text-white">{shippingCost} MAD</span>
+                    <span>Shipping (Morocco)</span>
+                    <span className="text-white">{formatPrice(shippingCost)}</span>
                   </div>
                 </div>
 
@@ -258,7 +260,7 @@ const CheckoutPage = () => {
                   <div className="flex justify-between items-end">
                     <span className="font-bold">Total</span>
                     <span className="font-heading text-2xl font-bold text-[var(--color-secondary)]">
-                      {finalTotal} <span className="text-base font-normal text-gray-300">MAD</span>
+                      {formatPrice(finalTotal)}
                     </span>
                   </div>
                 </div>

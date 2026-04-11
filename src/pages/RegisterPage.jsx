@@ -45,11 +45,11 @@ const RegisterPage = () => {
               <span className="font-accent text-sm ml-1 text-[var(--color-secondary)] uppercase">Shop</span>
            </div>
         </Link>
-        <p className="text-gray-500 mt-2 font-body">Rejoignez la communauté de l'artisanat marocain.</p>
+        <p className="text-gray-500 mt-2 font-body">Join the Moroccan craftsmanship community.</p>
       </div>
 
       <div className="w-full max-w-md bg-white rounded-2xl shadow-warm border border-orange-50 p-8 relative z-10 page-enter">
-        <h2 className="font-heading text-2xl font-bold text-center mb-6">Créer un compte</h2>
+        <h2 className="font-heading text-2xl font-bold text-center mb-6">Create an Account</h2>
         
         {/* Role Toggle */}
         <div className="flex p-1 bg-gray-100 rounded-lg mb-6">
@@ -75,7 +75,7 @@ const RegisterPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                 <User size={18} />
@@ -111,7 +111,7 @@ const RegisterPage = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                 <Lock size={18} />
@@ -134,7 +134,7 @@ const RegisterPage = () => {
             disabled={isLoading}
             className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-[#6b3510] transition-colors shadow-sm disabled:opacity-70 mt-6"
           >
-            {isLoading ? <Loader2 className="animate-spin" size={20} /> : 'Créer mon compte'}
+            {isLoading ? <Loader2 className="animate-spin" size={20} /> : 'Create my Account'}
           </button>
         </form>
 
@@ -143,7 +143,7 @@ const RegisterPage = () => {
             <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Ou continuer avec</span>
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
           </div>
         </div>
 
@@ -160,7 +160,7 @@ const RegisterPage = () => {
         <p className="text-center text-sm text-gray-600 mt-6">
           Déjà un compte ?{' '}
           <Link to="/login" className="font-bold text-[var(--color-primary)] hover:underline">
-            Se connecter
+            Sign In
           </Link>
         </p>
       </div>

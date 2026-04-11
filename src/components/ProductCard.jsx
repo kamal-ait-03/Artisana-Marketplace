@@ -1,3 +1,4 @@
+import { useCurrency } from '../context/CurrencyContext';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Heart, Star } from 'lucide-react';
@@ -5,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import PropTypes from 'prop-types';
 
 const ProductCard = ({ product }) => {
+  const { formatPrice, currency } = useCurrency();
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const [isHovered, setIsHovered] = useState(false);
@@ -29,8 +31,8 @@ const ProductCard = ({ product }) => {
     };
 
     return (
-        <Link 
-            to={`/produit/${product.id}`}
+        <Link
+            to={`/product/${product.id}`}
             className="group block bg-white rounded-[32px] overflow-hidden shadow-card transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] border border-slate-50"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -79,7 +81,7 @@ const ProductCard = ({ product }) => {
                         {product.name}
                     </h3>
                     <div className="flex items-center gap-1 font-bold text-slate-900 whitespace-nowrap">
-                        {product.price} <span className="text-xs text-[#00B4D8]">MAD</span>
+                        {formatPrice(product.price)}
                     </div>
                 </div>
                 
@@ -112,7 +114,7 @@ const ProductCard = ({ product }) => {
                         onClick={handleViewArtisan}
                         className="text-[10px] font-bold text-[#00B4D8] hover:underline flex items-center gap-0.5"
                     >
-                        Voir l'Artisan <span className="text-sm">→</span>
+                        View Artisan <span className="text-sm">→</span>       
                     </button>
                 </div>
             </div>

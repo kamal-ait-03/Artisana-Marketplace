@@ -561,7 +561,7 @@ const SellerRegisterPage = () => {
                   {/* Price & Stock */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (MAD)</label>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (USD)</label>
                       <div className="relative">
                         <input
                           type="number" min="0" step="0.01"
@@ -667,7 +667,7 @@ const SellerRegisterPage = () => {
                         <p className="text-[10px] text-slate-400 font-bold uppercase">{p.category}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-black text-[#00BCD4] text-sm">{p.price ? `${Number(p.price).toLocaleString()} MAD` : '—'}</p>
+                        <p className="font-black text-[#00BCD4] text-sm">{p.price ? `${Number(p.price).toLocaleString()} USD` : '—'}</p>
                         <p className="text-[10px] text-slate-400 font-bold">Stock: {p.stock || 0}</p>
                       </div>
                     </div>

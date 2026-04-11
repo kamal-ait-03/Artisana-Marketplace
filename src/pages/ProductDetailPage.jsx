@@ -1,3 +1,4 @@
+import { useCurrency } from '../context/CurrencyContext';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockProducts } from '../data/mockData';
@@ -7,6 +8,7 @@ import CategoryBadge from '../components/CategoryBadge';
 import { Star, Minus, Plus, ShoppingCart, CreditCard, ChevronDown, ChevronUp, Truck, ShieldCheck, MapPin, MessageCircle, ExternalLink } from 'lucide-react';
 
 const ProductDetailPage = () => {
+  const { formatPrice, currency } = useCurrency();
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -52,7 +54,7 @@ const ProductDetailPage = () => {
 
   const handleBuyNow = () => {
     addToCart(product, qty);
-    navigate('/commande');
+    navigate('/checkout');
   };
 
   return (
@@ -61,7 +63,7 @@ const ProductDetailPage = () => {
         
         {/* Breadcrumb could go here */}
         <div className="text-sm text-gray-500 mb-8 font-body">
-          Accueil / {product.category} / <span className="text-[var(--color-text)]">{product.name}</span>
+          Home / {product.category} / <span className="text-[var(--color-text)]">{product.name}</span>
         </div>
 
         <div className="flex flex-col md:flex-row gap-12 lg:gap-20">
@@ -112,7 +114,7 @@ const ProductDetailPage = () => {
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={18} fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'} />
                 ))}
-                <span className="text-gray-600 font-body text-sm ml-2">({product.reviewCount} avis)</span>
+                <span className="text-gray-600 font-body text-sm ml-2">({product.reviewCount} reviews)</span>
               </div>
             </div>
 
@@ -136,7 +138,7 @@ const ProductDetailPage = () => {
                     </div>
                   </div>
                   <p className="text-xs text-gray-500 flex items-center gap-1 font-medium">
-                    <MapPin size={12} className="text-[var(--color-primary)]" /> {product.artisan.city}, Maroc
+                    <MapPin size={12} className="text-[var(--color-primary)]" /> {product.artisan.city}, Morocco
                   </p>
                 </div>
               </div>
@@ -150,7 +152,7 @@ const ProductDetailPage = () => {
                   onClick={() => navigate(`/artisans/${product.artisan.id}`)}
                   className="flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-[var(--color-primary)] text-[var(--color-primary)] text-sm font-bold hover:bg-[var(--color-primary)] hover:text-white transition-all"
                 >
-                  <ExternalLink size={16} /> Voir ses produits
+                  <ExternalLink size={16} /> View Their Products
                 </button>
                 <a 
                   href={`https://wa.me/${product.artisan.whatsapp}`}
@@ -165,9 +167,9 @@ const ProductDetailPage = () => {
 
             <div className="mb-10">
               <span className="font-heading text-5xl font-bold text-slate-900">
-                {product.price} <span className="text-2xl font-normal text-slate-400">MAD</span>
+                {formatPrice(product.price)}
               </span>
-              <p className="text-sm text-gray-500 mt-1">Taxes incluses. Stock disponible: <span className="font-medium text-green-600">{product.stock} unités</span></p>
+              <p className="text-sm text-gray-500 mt-1">Taxes included. Available stock: <span className="font-medium text-green-600">{product.stock} units</span></p>
             </div>
 
             {/* Actions */}
@@ -188,7 +190,7 @@ const ProductDetailPage = () => {
                   onClick={handleAddToCart}
                   className="flex-1 bg-[var(--color-primary)] text-white h-14 rounded-lg font-bold flex items-center justify-center gap-2 shadow-warm hover:opacity-90 transition-opacity"
                 >
-                  <ShoppingCart size={20} /> Ajouter au Panier
+                  <ShoppingCart size={20} /> Add to Cart
                 </button>
               </div>
               
@@ -196,7 +198,7 @@ const ProductDetailPage = () => {
                 onClick={handleBuyNow}
                 className="w-full h-14 border-2 border-[var(--color-primary)] text-[var(--color-primary)] rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-[var(--color-primary)] hover:text-white transition-colors"
               >
-                <CreditCard size={20} /> Acheter Maintenant
+                <CreditCard size={20} /> Buy Now
               </button>
             </div>
 
@@ -209,7 +211,7 @@ const ProductDetailPage = () => {
                   onClick={() => setActiveAccordion(activeAccordion === 'description' ? '' : 'description')}
                   className="w-full flex justify-between items-center p-4 font-bold text-left bg-gray-50 hover:bg-gray-100 transition-colors"
                 >
-                  <span>Description du produit</span>
+                  <span>Product Description</span>
                   {activeAccordion === 'description' ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </button>
                 {activeAccordion === 'description' && (
@@ -225,7 +227,7 @@ const ProductDetailPage = () => {
                   onClick={() => setActiveAccordion(activeAccordion === 'shipping' ? '' : 'shipping')}
                   className="w-full flex justify-between items-center p-4 font-bold text-left bg-gray-50 hover:bg-gray-100 transition-colors"
                 >
-                  <span className="flex items-center gap-2"><Truck size={18} /> Livraison & Retours</span>
+                  <span className="flex items-center gap-2"><Truck size={18} /> Shipping & Returns</span>
                   {activeAccordion === 'shipping' ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </button>
                 {activeAccordion === 'shipping' && (
@@ -233,15 +235,15 @@ const ProductDetailPage = () => {
                     <div className="flex gap-3">
                       <Truck size={20} className="text-[var(--color-primary)] shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-bold text-sm">Livraison partout au Maroc (2-5 jours)</p>
-                        <p className="text-sm text-gray-600">Emballage sécurisé pour protéger l'artisanat.</p>
+                        <p className="font-bold text-sm">Shipping partout au Morocco (2-5 jours)</p>
+                        <p className="text-sm text-gray-600">Secure packaging to protect craftsmanship.</p>
                       </div>
                     </div>
                     <div className="flex gap-3">
                       <ShieldCheck size={20} className="text-green-600 shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-bold text-sm">Authenticité Garantie</p>
-                        <p className="text-sm text-gray-600">Produit certifié 100% fait main par l'artisan.</p>
+                        <p className="font-bold text-sm">Authenticity Guaranteed</p>
+                        <p className="text-sm text-gray-600">Product certified 100% handmade by the artisan.</p>
                       </div>
                     </div>
                   </div>
@@ -255,7 +257,7 @@ const ProductDetailPage = () => {
         {/* Similar Products */}
         <div className="mt-24">
           <div className="text-center mb-10">
-            <h3 className="font-heading text-3xl font-bold text-[var(--color-text)] mb-4">Produits Similaires</h3>
+            <h3 className="font-heading text-3xl font-bold text-[var(--color-text)] mb-4">Similar Products</h3>
             <div className="h-1 w-16 bg-[var(--color-secondary)] mx-auto rounded"></div>
           </div>
           
