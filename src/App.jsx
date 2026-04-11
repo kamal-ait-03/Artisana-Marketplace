@@ -1,10 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { LanguageProvider } from './context/LanguageContext';
+import { CurrencyProvider } from './context/CurrencyContext';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
+import CurrencyToggle from './components/CurrencyToggle';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -24,18 +27,20 @@ import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
+    <LanguageProvider>
+      <CurrencyProvider>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow pt-20">
               <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/catalogue" element={<CatalogPage />} />
-                <Route path="/produit/:id" element={<ProductDetailPage />} />
-                <Route path="/panier" element={<CartPage />} />
-                <Route path="/commande" element={<CheckoutPage />} />
+                <Route path="/catalog" element={<CatalogPage />} />
+                <Route path="/product/:id" element={<ProductDetailPage />} />   
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/dashboard" element={<ArtisanDashboard />} />
@@ -49,10 +54,13 @@ function App() {
             </main>
             <Footer />
             <BackToTop />
+            <CurrencyToggle />
           </div>
         </BrowserRouter>
       </CartProvider>
     </AuthProvider>
+          </CurrencyProvider>
+    </LanguageProvider>
   );
 }
 

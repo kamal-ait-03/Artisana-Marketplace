@@ -7,7 +7,18 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('artisana_cart');
-    return savedCart ? JSON.parse(savedCart) : [];
+    if (savedCart) {
+      try {
+        const parsed = JSON.parse(savedCart);
+        // Filter out any old legacy format items that don't have the 'product' wrapper
+        return parsed
+          .filter(item => item && item.product && item.product.id)
+          .map(item => ({ ...item, qty: item.qty || 1 }));
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
   });
 
   useEffect(() => {

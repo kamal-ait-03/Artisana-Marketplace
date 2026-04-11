@@ -43,7 +43,7 @@ const Navbar = () => {
 
     const translations = {
         categories: 'Categories',
-        artisans: 'Nos Artisans',
+        artisans: 'Our Artisans',
         aboutUs: 'About Us',
         searchPlaceholder: 'Search "Beni Ouarain", "Argan"...',
         promo: 'Get 50% Off on Selected Artisanal Pieces',
@@ -203,7 +203,7 @@ const Navbar = () => {
                             )}
                         </div>
 
-                        <Link to="/panier" className="flex flex-col items-center group relative pt-1">
+                        <Link to="/cart" className="flex flex-col items-center group relative pt-1">
                             <ShoppingCart size={20} className="text-slate-800 group-hover:text-[#00B4D8] transition-colors" />
                             <span className="text-[10px] font-bold text-slate-500 group-hover:text-[#00B4D8] uppercase mt-1">{t.cart}</span>
                             {cartItemCount > 0 && (
@@ -238,9 +238,9 @@ const Navbar = () => {
                         {categories.map((cat) => {
                             const meta = categoryMetaData[cat.id];
                             return (
-                                <Link 
-                                    key={cat.id} 
-                                    to={`/catalogue?category=${cat.id}`}
+                                <Link
+                                    key={cat.id}
+                                    to={`/catalog?category=${cat.id}`}
                                     onClick={() => setIsCategoryMenuOpen(false)}
                                     className="group relative flex flex-col items-center justify-center text-center p-8 rounded-[40px] border border-transparent hover:border-[#00B4D8]/20 hover:shadow-xl overflow-hidden h-[280px]"
                                 >
@@ -291,7 +291,7 @@ const Navbar = () => {
                     <div className="h-px bg-slate-100" />
                     
                     <Link to="/artisans" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
-                        Nos Artisans <ChevronDown size={20} className="-rotate-90 text-slate-300" />
+                        Our Artisans <ChevronDown size={20} className="-rotate-90 text-slate-300" />
                     </Link>
 
                     {role === 'artisan' ? (

@@ -1,11 +1,11 @@
 const getUnsplashUrl = (id, width = 800) => `https://images.unsplash.com/${id}?w=${width}&q=80`;
 
 export const categories = [
-  { id: 'pottery', name: 'Pottery', nameEn: 'Pottery', icon: '🏺', imageId: 'photo-1594736797933-d0501ba2fe65' },
-  { id: 'leather', name: 'Leather', nameEn: 'Leather', icon: '👜', imageId: 'photo-1548036328-c9fa89d128fa' },
-  { id: 'clothing', name: 'Clothing', nameEn: 'Clothing', icon: '👘', imageId: 'photo-1558618666-fcd25c85cd64' },
-  { id: 'beauty', name: 'Beauté Naturelle', nameEn: 'Natural Beauty', icon: '🌿', imageId: 'photo-1608248543803-ba4f8c70ae0b' },
-  { id: 'carpets', name: 'Tapis & Tissages', nameEn: 'Carpets', icon: '🟤', imageId: 'photo-1600166898405-da9535204843' }
+  { id: 'pottery', name: 'Pottery', nameEn: 'Pottery', icon: '���', imageId: 'photo-1594736797933-d0501ba2fe65' },
+  { id: 'leather', name: 'Leather', nameEn: 'Leather', icon: '���', imageId: 'photo-1548036328-c9fa89d128fa' },
+  { id: 'clothing', name: 'Clothing', nameEn: 'Clothing', icon: '���', imageId: 'photo-1558618666-fcd25c85cd64' },
+  { id: 'beauty', name: 'Natural Beauty', nameEn: 'Natural Beauty', icon: '���', imageId: 'photo-1608248543803-ba4f8c70ae0b' },
+  { id: 'carpets', name: 'Carpets & Weaving', nameEn: 'Carpets', icon: '���', imageId: 'photo-1600166898405-da9535204843' }
 ];
 
 export const artisans = [
@@ -13,66 +13,66 @@ export const artisans = [
     id: 'a1',
     name: 'Hassan',
     city: 'Safi',
-    specialty: 'Poterie & Céramique',
+    specialty: 'Pottery & Ceramics',
     rating: 4.9,
     sales: 340,
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
-    bio: "Maître potier de Safi depuis 25 ans, Hassan perpétue les traditions céramiques de la ville à travers des pièces uniques peintes à la main.",
+    bio: "Master potter from Safi for 25 years, Hassan perpetuates the city's ceramic traditions through unique hand-painted pieces.",
     whatsapp: '212600000000'
   },
   {
     id: 'a2',
     name: 'Fatima',
     city: 'Marrakech',
-    specialty: 'Tapis & Tissages',
+    specialty: 'Carpets & Weaving',
     rating: 4.8,
     sales: 215,
     avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop',
-    bio: "Tisserande berbère de Marrakech, Fatima crée des tapis d'exception qui racontent les histoires de ses ancêtres à travers des motifs géométriques.",
+    bio: "Berber weaver from Marrakech, Fatima creates exceptional carpets that tell the stories of her ancestors through geometric patterns.",
     whatsapp: '212600000000'
   },
   {
     id: 'a3',
     name: 'Youssef',
-    city: 'Fès',
-    specialty: 'Maroquinerie & Cuir',
+    city: 'Fez',
+    specialty: 'Leather Goods',
     rating: 4.7,
     sales: 189,
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop',
-    bio: "Artisan maroquinier des tanneries de Fès, Youssef utilise uniquement des techniques de tannage naturel transmises depuis cinq générations.",
+    bio: "Leatherwork artisan from the tanneries of Fez, Youssef uses only natural tanning techniques passed down for five generations.",
     whatsapp: '212600000000'
   },
   {
     id: 'a4',
     name: 'Amina',
-    city: 'Tétouan',
-    specialty: 'Habits de Tradition',
+    city: 'Tetouan',
+    specialty: 'Traditional Clothing',
     rating: 4.6,
     sales: 97,
     avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1bf78c?q=80&w=150&auto=format&fit=crop',
-    bio: "Styliste et brodeuse de Tétouan, Amina revisite le patrimoine vestimentaire marocain avec une touche de modernité et d'élégance.",
+    bio: "Stylist and embroiderer from Tetouan, Amina revisits Moroccan clothing heritage with a touch of modernity and elegance.",
     whatsapp: '212600000000'
   },
   {
     id: 'a5',
     name: 'Malika',
     city: 'Agadir',
-    specialty: 'Beauté Naturelle',
+    specialty: 'Natural Beauty',
     rating: 4.9,
     sales: 420,
     avatar: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2a04?q=80&w=150&auto=format&fit=crop',
-    bio: "Spécialiste de l'extraction de l'huile d'argan et des produits de beauté naturels à Agadir, Malika valorise les trésors de la terre berbère.",
+    bio: "Specialist in argan oil extraction and natural beauty products in Agadir, Malika highlights the treasures of the Berber earth.",
     whatsapp: '212600000000'
   },
   {
     id: 'a6',
     name: 'Karim',
     city: 'Chefchaouen',
-    specialty: 'Décoration d\'Intérieur',
+    specialty: 'Interior Decoration',
     rating: 4.8,
     sales: 156,
     avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop',
-    bio: "Menuisier et sculpteur sur bois à Chefchaouen, Karim crée des objets de décoration inspirés par l'architecture bleue emblématique de sa ville.",
+    bio: "Carpenter and wood carver in Chefchaouen, Karim creates decorative objects inspired by the iconic blue architecture of his city.",
     whatsapp: '212600000000'
   },
 ];
@@ -80,10 +80,10 @@ export const artisans = [
 export const mockProducts = [
   {
     id: 'p1',
-    name: 'Vase en Céramique Bleue',
+    name: 'Blue Ceramic Vase',
     category: 'pottery',
     price: 450,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1594736797933-d0501ba2fe65', 600)],
     artisan: artisans[0],
     rating: 4.8,
@@ -92,14 +92,14 @@ export const mockProducts = [
     isFeatured: true,
     stock: 12,
     status: 'published',
-    description: 'Vase artisanal peint à la main à Safi, arborant des motifs géométriques traditionnels et le bleu emblématique de la région.'
+    description: 'Hand-painted artisanal vase from Safi, featuring traditional geometric patterns and the region\'s iconic blue.'
   },
   {
     id: 'p2',
-    name: 'Tajine Traditionnel Vernissé',
+    name: 'Traditional Glazed Tagine',
     category: 'pottery',
     price: 320,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1594736797933-d0501ba2fe65', 500)],
     artisan: artisans[0],
     rating: 4.7,
@@ -108,14 +108,14 @@ export const mockProducts = [
     isFeatured: false,
     stock: 20,
     status: 'published',
-    description: 'Tajine de cuisson en terre cuite vernissée, idéal pour mijoter vos plats préférés avec une saveur authentique.'
+    description: 'Glazed terracotta cooking tagine, ideal for simmering your favorite dishes with authentic flavor.'
   },
   {
     id: 'p3',
-    name: 'Tapis Beni Ouarain Blanc',
+    name: 'White Beni Ouarain Carpet',
     category: 'carpets',
     price: 3500,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1600166898405-da9535204843', 600)],
     artisan: artisans[1],
     rating: 5.0,
@@ -123,14 +123,14 @@ export const mockProducts = [
     isNew: true,
     isFeatured: true,
     stock: 2,
-    description: 'Tapis berbère authentique 100% laine de mouton, tissé à la main par les femmes de la tribu Beni Ouarain.'
+    description: 'Authentic 100% sheep wool Berber carpet, hand-woven by the women of the Beni Ouarain tribe.'
   },
   {
     id: 'p4',
-    name: 'Tapis Azilal Coloré',
+    name: 'Colorful Azilal Carpet',
     category: 'carpets',
     price: 2800,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1600166898405-da9535204843', 500)],
     artisan: artisans[1],
     rating: 4.9,
@@ -138,14 +138,14 @@ export const mockProducts = [
     isNew: false,
     isFeatured: false,
     stock: 3,
-    description: 'Tapis Azilal vibrant de couleurs, chaque motif raconte une histoire personnelle de la tisserande.'
+    description: 'Vibrantly colored Azilal carpet, each pattern tells a personal story of the weaver.'
   },
   {
     id: 'p5',
-    name: 'Sacoche en Cuir Vintage',
+    name: 'Vintage Leather Satchel',
     category: 'leather',
     price: 850,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1548036328-c9fa89d128fa', 600)],
     artisan: artisans[2],
     rating: 4.6,
@@ -153,14 +153,14 @@ export const mockProducts = [
     isNew: false,
     isFeatured: true,
     stock: 8,
-    description: 'Sacoche en cuir de chèvre au tannage naturel végétal, fabriquée selon les méthodes ancestrales de Fès.'
+    description: 'Goat leather satchel with natural vegetable tanning, made using the ancestral methods of Fez.'
   },
   {
     id: 'p6',
-    name: 'Pouf en Cuir Brodé',
+    name: 'Embroidered Leather Pouf',
     category: 'leather',
     price: 650,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1548036328-c9fa89d128fa', 500)],
     artisan: artisans[2],
     rating: 4.8,
@@ -168,14 +168,14 @@ export const mockProducts = [
     isNew: true,
     isFeatured: false,
     stock: 15,
-    description: 'Pouf traditionnel marocain en cuir de qualité supérieure, brodé à la main avec une grande finesse.'
+    description: 'Traditional Moroccan pouf in premium leather, hand-embroidered with great finesse.'
   },
   {
     id: 'p7',
-    name: 'Caftan en Soie Brodé',
+    name: 'Embroidered Silk Caftan',
     category: 'clothing',
     price: 4200,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1558618666-fcd25c85cd64', 600)],
     artisan: artisans[3],
     rating: 4.9,
@@ -183,14 +183,14 @@ export const mockProducts = [
     isNew: true,
     isFeatured: true,
     stock: 5,
-    description: 'Caftan haute couture en soie, orné de broderies complexes réalisées à la main par les meilleures artisanes.'
+    description: 'Haute couture silk caftan, adorned with complex embroidery handmade by the best artisans.'
   },
   {
     id: 'p8',
-    name: 'Djellaba en Lin Léger',
+    name: 'Light Linen Djellaba',
     category: 'clothing',
     price: 1200,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1558618666-fcd25c85cd64', 500)],
     artisan: artisans[3],
     rating: 4.7,
@@ -198,14 +198,14 @@ export const mockProducts = [
     isNew: false,
     isFeatured: false,
     stock: 10,
-    description: 'Djellaba moderne en lin de haute qualité, idéale pour un look élégant et décontracté.'
+    description: 'Modern djellaba in high-quality linen, ideal for an elegant and casual look.'
   },
   {
     id: 'p9',
-    name: 'Huile d\'Argan Pure Bio',
+    name: 'Pure Organic Argan Oil',
     category: 'beauty',
     price: 250,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1608248543803-ba4f8c70ae0b', 600)],
     artisan: artisans[4],
     rating: 5.0,
@@ -213,14 +213,14 @@ export const mockProducts = [
     isNew: false,
     isFeatured: true,
     stock: 50,
-    description: 'L\'or liquide du Maroc, 100% pure et biologique, extraite à la main de manière artisanale.'
+    description: 'The liquid gold of Morocco, 100% pure and organic, hand-extracted in an artisanal way.'
   },
   {
     id: 'p10',
-    name: 'Sérum Éclat à la Figue de Barbarie',
+    name: 'Prickly Pear Radiance Serum',
     category: 'beauty',
     price: 450,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1608248543803-ba4f8c70ae0b', 500)],
     artisan: artisans[4],
     rating: 4.9,
@@ -228,14 +228,14 @@ export const mockProducts = [
     isNew: true,
     isFeatured: false,
     stock: 25,
-    description: 'Sérum naturel aux propriétés régénérantes exceptionnelles, fabriqué à partir de pépins de figue de barbarie.'
+    description: 'Natural serum with exceptional regenerating properties, made from prickly pear seeds.'
   },
   {
     id: 'p11',
-    name: 'Miroir Mural Artisanal',
+    name: 'Artisanal Wall Mirror',
     category: 'decoration',
     price: 750,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1565193566173-7a0ee3dbe261', 600)],
     artisan: artisans[5],
     rating: 4.8,
@@ -243,14 +243,14 @@ export const mockProducts = [
     isNew: true,
     isFeatured: true,
     stock: 4,
-    description: 'Miroir décoratif encadré de bois sculpté à la main, apportant une touche de charme oriental à votre intérieur.'
+    description: 'Decorative mirror framed with hand-carved wood, bringing a touch of oriental charm to your interior.'
   },
   {
     id: 'p12',
-    name: 'Lanterne en Métal Ciselé',
+    name: 'Chiseled Metal Lantern',
     category: 'decoration',
     price: 380,
-    currency: 'MAD',
+    currency: 'USD',
     images: [getUnsplashUrl('photo-1565193566173-7a0ee3dbe261', 500)],
     artisan: artisans[5],
     rating: 4.7,
@@ -258,7 +258,7 @@ export const mockProducts = [
     isNew: false,
     isFeatured: false,
     stock: 12,
-    description: 'Lanterne traditionnelle créant des jeux d\'ombre et de lumière magnifiques grâce à son métal finement ciselé.'
+    description: 'Traditional lantern creating beautiful light and shadow play thanks to its finely chiseled metal.'
   },
 ];
 
@@ -269,7 +269,7 @@ export const mockOrders = [
     items: [mockProducts[0]],
     total: 1250,
     status: 'preparing',
-    date: '01 Avril 2026'
+    date: '01 April 2026'
   },
   {
     id: 'ORD-2022',
@@ -277,7 +277,7 @@ export const mockOrders = [
     items: [mockProducts[1]],
     total: 320,
     status: 'shipped',
-    date: '02 Avril 2026'
+    date: '02 April 2026'
   },
   {
     id: 'ORD-2023',
@@ -285,6 +285,6 @@ export const mockOrders = [
     items: [mockProducts[0], mockProducts[1]],
     total: 1570,
     status: 'delivered',
-    date: '04 Avril 2026'
+    date: '04 April 2026'
   }
 ];

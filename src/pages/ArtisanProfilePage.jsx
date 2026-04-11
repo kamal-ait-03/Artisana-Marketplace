@@ -36,7 +36,7 @@ const ArtisanProfilePage = () => {
           to="/artisans" 
           className="absolute top-28 left-4 md:left-8 flex items-center gap-2 text-white font-bold bg-black/20 backdrop-blur-md px-4 py-2 rounded-full hover:bg-black/30 transition-all z-10"
         >
-          <ArrowLeft size={18} /> Retour
+          <ArrowLeft size={18} /> Back
         </Link>
       </div>
 
@@ -77,7 +77,7 @@ const ArtisanProfilePage = () => {
                   </div>
                   <div>
                     <p className="text-xl font-black text-slate-900">{artisanProducts.length}</p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Produits</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Products</p>
                   </div>
                 </div>
 
@@ -116,7 +116,7 @@ const ArtisanProfilePage = () => {
         {/* Products Grid */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-heading text-3xl font-black text-slate-900">Mes Créations</h2>
+            <h2 className="font-heading text-3xl font-black text-slate-900">My Creations</h2>
             <div className="h-1 flex-1 bg-slate-100 mx-8 rounded-full" />
           </div>
 

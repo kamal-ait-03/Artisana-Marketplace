@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { MapPin, Star, Package, ArrowRight, Filter } from 'lucide-react';
 import { artisans, mockProducts } from '../data/mockData';
 
-const cities = ['Tous', 'Marrakech', 'Fès', 'Safi', 'Tétouan', 'Agadir', 'Chefchaouen'];
+const cities = ['All', 'Marrakech', 'Fez', 'Safi', 'Tetouan', 'Agadir', 'Chefchaouen'];
 
 const ArtisansPage = () => {
-  const [selectedCity, setSelectedCity] = useState('Tous');
+  const [selectedCity, setSelectedCity] = useState('All');
 
   const processedArtisans = artisans.map(a => ({
     ...a,
@@ -17,10 +17,10 @@ const ArtisansPage = () => {
                 a.id === 'a3' ? 'from-stone-800 to-stone-600' :
                 a.id === 'a4' ? 'from-teal-800 to-teal-600' :
                 'from-indigo-900 to-indigo-700',
-    badge: a.rating >= 4.9 ? 'Maître Artisan' : 'Artisan Qualifié'
+    badge: a.rating >= 4.9 ? 'Master Artisan' : 'Qualified Artisan'
   }));
 
-  const filtered = selectedCity === 'Tous'
+  const filtered = selectedCity === 'All'
     ? processedArtisans
     : processedArtisans.filter(a => a.city === selectedCity);
 
@@ -32,13 +32,13 @@ const ArtisansPage = () => {
         <div className="absolute inset-0 opacity-10 bg-zellige pointer-events-none" />
         <div className="container mx-auto px-4 md:px-8 relative z-10 text-center">
           <span className="font-bold text-white/80 tracking-widest uppercase text-xs mb-4 block">
-            Les Gardiens du Savoir-Faire
+            The Guardians of Craftsmanship
           </span>
           <h1 className="font-heading text-4xl md:text-6xl font-black mb-6">
-            Nos Artisans
+            Our Artisans
           </h1>
           <p className="font-body text-white/90 text-lg max-w-2xl mx-auto leading-relaxed font-medium">
-            Derrière chaque création, il y a une histoire, une ville, une famille. Découvrez les maîtres artisans qui font vivre la culture marocaine.
+            Behind each creation, there is a story, a city, a family. Discover the master artisans who bring Moroccan culture to life.
           </p>
         </div>
       </section>
@@ -48,9 +48,9 @@ const ArtisansPage = () => {
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-3 gap-6 text-center max-w-2xl mx-auto">
             {[
-              { value: '500+', label: 'Artisans Actifs' },
-              { value: '12', label: 'Villes du Maroc' },
-              { value: '2 000+', label: 'Créations Uniques' },
+              { value: '500+', label: 'Active Artisans' },
+              { value: '12', label: 'Citys du Morocco' },
+              { value: '2 000+', label: 'Unique Creations' },
             ].map(stat => (
               <div key={stat.label}>
                 <p className="font-heading text-3xl font-black text-slate-900">{stat.value}</p>
@@ -67,7 +67,7 @@ const ArtisansPage = () => {
           <div className="flex items-center gap-4 flex-wrap justify-center">
             <div className="flex items-center gap-2 text-slate-400 mr-4">
               <Filter size={18} />
-              <span className="text-sm font-bold uppercase tracking-widest">Filtrer par ville :</span>
+              <span className="text-sm font-bold uppercase tracking-widest">Filter by city:</span>
             </div>
             {cities.map(city => (
               <button
@@ -128,7 +128,7 @@ const ArtisansPage = () => {
 
                   <div className="flex items-center gap-1.5 text-slate-400 text-sm mb-4">
                     <MapPin size={14} className="text-[#00BCD4]" />
-                    <span className="font-bold">{artisan.city}, Maroc</span>
+                    <span className="font-bold">{artisan.city}, Morocco</span>
                   </div>
 
                   <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6 bg-slate-50 p-4 rounded-2xl italic">
@@ -139,12 +139,12 @@ const ArtisansPage = () => {
                     <div className="flex items-center gap-4">
                       <div className="flex flex-col">
                         <span className="text-slate-900 font-black text-sm">{artisan.productCount}</span>
-                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Produits</span>
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Products</span>
                       </div>
                       <div className="w-px h-6 bg-slate-100" />
                       <div className="flex flex-col">
                         <span className="text-slate-900 font-black text-sm">{artisan.sales}</span>
-                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Ventes</span>
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Sales</span>
                       </div>
                     </div>
                     <Link
@@ -162,7 +162,7 @@ const ArtisansPage = () => {
           {filtered.length === 0 && (
             <div className="text-center py-32">
               <div className="text-6xl mb-6">🐪</div>
-              <h3 className="text-2xl font-black text-slate-400">Aucun artisan trouvé dans cette ville</h3>
+              <h3 className="text-2xl font-black text-slate-400">No artisans found in this city</h3>
             </div>
           )}
         </div>
@@ -172,15 +172,15 @@ const ArtisansPage = () => {
       <section className="bg-slate-900 text-white py-24 relative overflow-hidden mx-4 md:mx-8 rounded-[60px] mb-24">
         <div className="absolute inset-0 opacity-10 bg-zellige pointer-events-none invert" />
         <div className="container mx-auto px-4 md:px-8 text-center relative z-10">
-          <h2 className="font-heading text-4xl md:text-5xl font-black mb-6">Vous êtes Artisan ?</h2>
+          <h2 className="font-heading text-4xl md:text-5xl font-black mb-6">Are You an Artisan?</h2>
           <p className="text-slate-400 text-lg mb-12 max-w-2xl mx-auto font-medium">
-            Rejoignez Artisana Shop et exposez votre savoir-faire au monde entier. Bénéficiez d'un accompagnement personnalisé et d'une visibilité internationale.
+            Join Artisana Shop and showcase your expertise to the world. Benefit from personalized support and international visibility.
           </p>
           <Link
             to="/register"
             className="inline-block bg-[#00BCD4] text-white px-12 py-5 rounded-full font-black hover:bg-[#0097a7] transition-all shadow-xl hover:translate-y-[-4px]"
           >
-            Devenir Vendeur sur Artisana
+            Become a Seller on Artisana
           </Link>
         </div>
       </section>
