@@ -10,7 +10,6 @@ const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isUserDropOpen, setIsUserDropOpen] = useState(false);
     const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
-    const [language, setLanguage] = useState('EN'); // EN or AR
     const [searchQuery, setSearchQuery] = useState('');
     const { cartItems } = useCart();
     const { user, logout, role } = useAuth();
@@ -20,12 +19,11 @@ const Navbar = () => {
     const cartItemCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
     const categoryMetaData = {
-        pottery: { icon: <Book size={24} />, color: 'text-amber-600', bg: 'bg-amber-50', desc: 'Hand-painted Safi ceramics' },
-        leather: { icon: <Scissors size={24} />, color: 'text-orange-700', bg: 'bg-orange-50', desc: 'Hand-tanned leather from Fès' },
-        clothing: { icon: <Shirt size={24} />, color: 'text-indigo-600', bg: 'bg-indigo-50', desc: 'Traditional caftans & djellabas' },
-        beauty: { icon: <Leaf size={24} />, color: 'text-emerald-600', bg: 'bg-emerald-50', desc: 'Pure Argan & natural elixirs' },
-        carpets: { icon: <LayoutGrid size={24} />, color: 'text-rose-700', bg: 'bg-rose-50', desc: 'Symbols of Moroccan heritage' },
-        decoration: { icon: <LayoutGrid size={24} />, color: 'text-cyan-700', bg: 'bg-cyan-50', desc: 'Modern & traditional decor' },
+        pottery: { bgImage: '/categories/pottery.jpg', desc: 'Hand-painted Safi ceramics' },
+        leather: { bgImage: '/categories/leather.jpg', desc: 'Hand-tanned leather from Fès' },
+        clothing: { bgImage: '/categories/clothing.jpg', desc: 'Traditional caftans & djellabas' },
+        beauty: { bgImage: '/categories/beauty.jpg', desc: 'Pure Argan & natural elixirs' },
+        carpets: { bgImage: '/categories/carpets.jpg', desc: 'Symbols of Moroccan heritage' },
     };
 
     useEffect(() => {
@@ -43,34 +41,17 @@ const Navbar = () => {
         navigate('/');
     };
 
-    const toggleLanguage = (lang) => {
-        setLanguage(lang);
-        document.documentElement.dir = (lang === 'AR') ? 'rtl' : 'ltr';
-    };
-
     const translations = {
-        EN: {
-            categories: 'Categories',
-            artisans: 'Nos Artisans',
-            aboutUs: 'About Us',
-            searchPlaceholder: 'Search "Beni Ouarain", "Argan"...',
-            promo: 'Get 50% Off on Selected Artisanal Pieces',
-            motto: 'Handmade with love, delivered with care.',
-            cart: 'Cart',
-            profile: 'Profile',
-        },
-        AR: {
-            categories: 'الأصناف',
-            artisans: 'حرفيونا',
-            aboutUs: 'من نحن',
-            searchPlaceholder: 'ابحث عن "منتجات يدوية", "الأركان"...',
-            promo: 'خصم 50% على قطع مختارة',
-            motto: 'صنع بكل حب، يصلكم بكل عناية.',
-            cart: 'سلة التسوق',
-            profile: 'الحساب',
-        }
+        categories: 'Categories',
+        artisans: 'Nos Artisans',
+        aboutUs: 'About Us',
+        searchPlaceholder: 'Search "Beni Ouarain", "Argan"...',
+        promo: 'Get 50% Off on Selected Artisanal Pieces',
+        motto: 'Handmade with love, delivered with care.',
+        cart: 'Cart',
+        profile: 'Profile',
     };
-    const t = translations[language];
+    const t = translations;
 
     const navLinks = [
         { name: t.artisans, path: '/artisans' },
@@ -106,7 +87,7 @@ const Navbar = () => {
             <div className={`bg-[#00B4D8] text-white py-2 px-4 transition-all duration-500 overflow-hidden text-xs md:text-sm hidden md:block ${isScrolled ? 'h-0 py-0 opacity-0' : 'h-10 opacity-100'}`}>
                 <div className="container mx-auto flex justify-between items-center relative">
                     <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-1.5"><Phone size={14} /> +212 5XX-XXXXXX</span>
+                        <span className="flex items-center gap-1.5"><Phone size={14} /> +212 522478936</span>
                         <span className="mx-2 opacity-30">|</span>
                         <div className="flex items-center gap-1.5 cursor-pointer hover:underline"><MapPin size={14} /> Global Delivery from Morocco</div>
                     </div>
@@ -114,22 +95,6 @@ const Navbar = () => {
                         <span className="opacity-90 font-medium italic">{t.motto}</span>
                     </div>
                     <div className="flex items-center gap-4">
-                        {/* Language Switcher with Moroccan Red highlights */}
-                        <div className="flex bg-white/10 rounded-lg p-0.5 border border-white/20">
-                            <button 
-                                onClick={() => toggleLanguage('EN')}
-                                className={`px-2 py-0.5 rounded-md text-[10px] font-black transition-all ${language === 'EN' ? 'bg-[#C1272D] text-white shadow-md' : 'text-white/70 hover:text-white'}`}
-                            >
-                                EN
-                            </button>
-                            <button 
-                                onClick={() => toggleLanguage('AR')}
-                                className={`px-2 py-0.5 rounded-md text-[10px] font-black transition-all ${language === 'AR' ? 'bg-[#C1272D] text-white shadow-md' : 'text-white/70 hover:text-white'}`}
-                            >
-                                AR
-                            </button>
-                        </div>
-                        <span className="mx-2 opacity-30">|</span>
                         <div className="flex items-center gap-1.5 cursor-pointer hover:underline">🇲🇦 Morocco</div>
                     </div>
                 </div>
@@ -277,18 +242,17 @@ const Navbar = () => {
                                     key={cat.id} 
                                     to={`/catalogue?category=${cat.id}`}
                                     onClick={() => setIsCategoryMenuOpen(false)}
-                                    className={`group flex flex-col items-center text-center p-8 rounded-[40px] transition-all duration-500 border border-transparent hover:border-[#00B4D8]/20 hover:shadow-xl ${meta?.bg || 'bg-slate-50'}`}
+                                    className="group relative flex flex-col items-center justify-center text-center p-8 rounded-[40px] border border-transparent hover:border-[#00B4D8]/20 hover:shadow-xl overflow-hidden h-[280px]"
                                 >
-                                    <div className={`w-20 h-20 rounded-3xl mb-6 flex items-center justify-center shadow-md transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 ${meta?.color || 'text-slate-800'} bg-white`}>
-                                        {meta?.icon || <LayoutGrid size={24} />}
-                                    </div>
-                                    <h3 className="text-xl font-black text-slate-900 mb-2 leading-tight">{cat.name}</h3>
-                                    <p className="text-xs text-slate-500 font-bold max-w-[120px] leading-relaxed mb-6 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider">{meta?.desc}</p>
+                                    <div 
+                                        className="absolute inset-0 bg-cover bg-center transition-transform duration-[400ms] group-hover:scale-110"
+                                        style={{ backgroundImage: `url('${meta?.bgImage}')` }}
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-[400ms]" />
                                     
-                                    <div className="mt-auto opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                                        <div className="w-10 h-10 bg-[#00B4D8] rounded-full flex items-center justify-center text-white">
-                                            <ChevronDown size={18} className="-rotate-90" />
-                                        </div>
+                                    <div className="relative z-10 flex flex-col items-center justify-center">
+                                        <h3 className="text-xl lg:text-2xl font-black text-white mb-2 leading-tight drop-shadow-md whitespace-nowrap">{cat.name}</h3>
+                                        <p className="text-xs text-white/90 font-bold max-w-[140px] leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms] uppercase tracking-wider drop-shadow-sm">{meta?.desc}</p>
                                     </div>
                                 </Link>
                             );
@@ -303,19 +267,24 @@ const Navbar = () => {
                     <div className="space-y-4">
                         <p className="text-[10px] font-black text-[#00B4D8] uppercase tracking-[0.3em] mb-4">Our Categories</p>
                         <div className="grid grid-cols-1 gap-3">
-                            {categories.map((cat) => (
-                                <Link 
-                                    key={cat.id} 
-                                    to={`/catalogue?category=${cat.id}`}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl group shadow-sm active:bg-[#CAF0F8]"
-                                >
-                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                        {categoryMetaData[cat.id]?.icon || <LayoutGrid size={20} />}
-                                    </div>
-                                    <span className="font-bold text-slate-900">{cat.name}</span>
-                                </Link>
-                            ))}
+                            {categories.map((cat) => {
+                                const meta = categoryMetaData[cat.id];
+                                return (
+                                    <Link 
+                                        key={cat.id} 
+                                        to={`/catalog?category=${cat.id}`}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex flex-col items-center justify-center text-center p-6 rounded-2xl group shadow-sm active:bg-[#CAF0F8] relative overflow-hidden"
+                                    >
+                                        <div 
+                                            className="absolute inset-0 bg-cover bg-center opacity-60" 
+                                            style={{ backgroundImage: `url('${meta?.bgImage}')` }} 
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 hover:bg-black/60 transition-colors" />
+                                        <span className="font-black text-white text-lg relative z-10">{cat.name}</span>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -349,7 +318,7 @@ const Navbar = () => {
 
                     <div className="mt-auto space-y-6">
                         <div className="flex items-center gap-3 text-slate-500 font-bold text-xs"><MapPin size={16} /> Marrakech, Morocco</div>
-                        <div className="flex items-center gap-3 text-slate-500 font-bold text-xs"><Phone size={16} /> +212 5XX-XXXXXX</div>
+                        <div className="flex items-center gap-3 text-slate-500 font-bold text-xs"><Phone size={16} /> +212 522478936</div>
                     </div>
                 </div>
             </div>
