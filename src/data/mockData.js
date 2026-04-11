@@ -1,12 +1,11 @@
 const getUnsplashUrl = (id, width = 800) => `https://images.unsplash.com/${id}?w=${width}&q=80`;
 
 export const categories = [
-  { id: 'pottery', name: 'Poterie & Céramique', nameEn: 'Pottery', icon: '🏺', imageId: 'photo-1594736797933-d0501ba2fe65' },
-  { id: 'leather', name: 'Maroquinerie Fine', nameEn: 'Leather', icon: '👜', imageId: 'photo-1548036328-c9fa89d128fa' },
-  { id: 'clothing', name: 'Habits de Tradition', nameEn: 'Clothing', icon: '👘', imageId: 'photo-1558618666-fcd25c85cd64' },
+  { id: 'pottery', name: 'Pottery', nameEn: 'Pottery', icon: '🏺', imageId: 'photo-1594736797933-d0501ba2fe65' },
+  { id: 'leather', name: 'Leather', nameEn: 'Leather', icon: '👜', imageId: 'photo-1548036328-c9fa89d128fa' },
+  { id: 'clothing', name: 'Clothing', nameEn: 'Clothing', icon: '👘', imageId: 'photo-1558618666-fcd25c85cd64' },
   { id: 'beauty', name: 'Beauté Naturelle', nameEn: 'Natural Beauty', icon: '🌿', imageId: 'photo-1608248543803-ba4f8c70ae0b' },
-  { id: 'carpets', name: 'Tapis & Tissages', nameEn: 'Carpets', icon: '🟤', imageId: 'photo-1600166898405-da9535204843' },
-  { id: 'decoration', name: 'Décoration d\'Intérieur', nameEn: 'Decoration', icon: '🏠', imageId: 'photo-1565193566173-7a0ee3dbe261' },
+  { id: 'carpets', name: 'Tapis & Tissages', nameEn: 'Carpets', icon: '🟤', imageId: 'photo-1600166898405-da9535204843' }
 ];
 
 export const artisans = [
