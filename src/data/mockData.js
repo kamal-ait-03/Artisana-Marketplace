@@ -91,6 +91,7 @@ export const mockProducts = [
     isNew: true,
     isFeatured: true,
     stock: 12,
+    status: 'published',
     description: 'Vase artisanal peint à la main à Safi, arborant des motifs géométriques traditionnels et le bleu emblématique de la région.'
   },
   {
@@ -106,6 +107,7 @@ export const mockProducts = [
     isNew: false,
     isFeatured: false,
     stock: 20,
+    status: 'published',
     description: 'Tajine de cuisson en terre cuite vernissée, idéal pour mijoter vos plats préférés avec une saveur authentique.'
   },
   {
@@ -258,4 +260,31 @@ export const mockProducts = [
     stock: 12,
     description: 'Lanterne traditionnelle créant des jeux d\'ombre et de lumière magnifiques grâce à son métal finement ciselé.'
   },
+];
+
+export const mockOrders = [
+  {
+    id: 'ORD-2021',
+    customer: 'Nadir S.',
+    items: [mockProducts[0]],
+    total: 1250,
+    status: 'preparing',
+    date: '01 Avril 2026'
+  },
+  {
+    id: 'ORD-2022',
+    customer: 'Sarah M.',
+    items: [mockProducts[1]],
+    total: 320,
+    status: 'shipped',
+    date: '02 Avril 2026'
+  },
+  {
+    id: 'ORD-2023',
+    customer: 'Karim B.',
+    items: [mockProducts[0], mockProducts[1]],
+    total: 1570,
+    status: 'delivered',
+    date: '04 Avril 2026'
+  }
 ];

@@ -1,8 +1,47 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Package, ShoppingBag, User, Plus, Edit, Trash2, X, Upload } from 'lucide-react';
-import { mockProducts, categories } from '../data/mockData';
+import { LayoutDashboard, Package, ShoppingBag, User, Plus, Edit, Trash2, X, Upload, CheckCircle, AlertCircle } from 'lucide-react';
+import { mockProducts, categories, mockOrders } from '../data/mockData';
+
+const StatCard = ({ title, value, icon, trend, color }) => {
+  const colors = {
+    blue: 'bg-blue-50 text-blue-600',
+    emerald: 'bg-emerald-50 text-emerald-600',
+    sky: 'bg-sky-50 text-sky-600',
+    cyan: 'bg-cyan-50 text-[#00B4D8]'
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-3xl shadow-soft border border-slate-50 transition-all hover:scale-[1.02]">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-2">{title}</p>
+          <h3 className="font-heading text-2xl font-black text-slate-900">{value}</h3>
+        </div>
+        <div className={`p-3 rounded-xl ${colors[color] || colors.blue}`}>
+          {icon}
+        </div>
+      </div>
+      <p className="text-[10px] font-bold text-slate-500 bg-slate-50 inline-block px-2 py-1 rounded-md">
+        {trend}
+      </p>
+    </div>
+  );
+};
+
+const DashboardInput = ({ label, value, onChange, placeholder = "", type = "text" }) => (
+  <div>
+    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{label}</label>
+    <input 
+      type={type}
+      value={value}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-3 px-6 text-sm font-bold focus:border-[#00B4D8] focus:bg-white outline-none transition-all"
+    />
+  </div>
+);
 
 const ArtisanDashboard = () => {
   const { user, role } = useAuth();
@@ -10,6 +49,21 @@ const ArtisanDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [artisanProducts, setArtisanProducts] = useState([]);
+  
+  // Payment & Billing State
+  const [paymentInfo, setPaymentInfo] = useState({
+    accountHolder: '',
+    iban: '',
+    provider: 'stripe',
+    status: 'pending'
+  });
+  
+  const [billingInfo, setBillingInfo] = useState({
+    businessName: '',
+    address: '',
+    phone: '',
+    taxId: ''
+  });
 
   useEffect(() => {
     // Protected route check
@@ -33,15 +87,16 @@ const ArtisanDashboard = () => {
   };
 
   const navItems = [
-    { id: 'dashboard', label: 'Tableau de Bord', icon: LayoutDashboard },
+    { id: 'dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard },
     { id: 'products', label: 'Mes Produits', icon: Package },
     { id: 'orders', label: 'Commandes', icon: ShoppingBag },
-    { id: 'profile', label: 'Profil', icon: User },
+    { id: 'finances', label: 'Finances & Paiements', icon: ShoppingBag }, // Reusing icon or change to DollarSign if available
+    { id: 'settings', label: 'Configuration', icon: User },
   ];
 
   return (
     <div className="bg-[var(--color-bg)] min-h-screen pt-20">
-      <div className="flex flex-col md:flex-row h-[calc(100vh-80px)]">
+      <div className="flex flex-col md:flex-row min-h-[calc(100vh-80px)]">
         
         {/* Sidebar */}
         <aside className="w-full md:w-64 bg-white border-r border-gray-200 shrink-0 overflow-y-auto">
@@ -57,7 +112,7 @@ const ArtisanDashboard = () => {
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full flex items-center gap-3 px-6 py-4 font-medium transition-colors ${
                   activeTab === item.id 
-                    ? 'bg-orange-50 text-[var(--color-primary)] border-r-4 border-[var(--color-primary)]' 
+                    ? 'bg-cyan-50 text-[#00B4D8] border-r-4 border-[#00B4D8]' 
                     : 'text-gray-600 hover:bg-gray-50 hover:text-[var(--color-text)]'
                 }`}
               >
@@ -73,41 +128,49 @@ const ArtisanDashboard = () => {
           
           {/* DASHBOARD TAB */}
           {activeTab === 'dashboard' && (
-            <div className="page-enter">
-              <h1 className="font-heading text-2xl font-bold mb-8">Vue d'ensemble</h1>
+            <div className="page-enter animate-fade-in">
+              <div className="flex justify-between items-center mb-8">
+                <h1 className="font-heading text-2xl font-bold">Performance du Magasin</h1>
+                <div className="text-sm font-bold text-slate-400 uppercase tracking-widest">Derniers 30 jours</div>
+              </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-50">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <p className="text-gray-500 text-sm font-medium">Total Produits</p>
-                      <h3 className="font-heading text-3xl font-bold text-[var(--color-text)] mt-1">{artisanProducts.length}</h3>
-                    </div>
-                    <div className="p-3 bg-blue-50 text-blue-600 rounded-lg"><Package size={24} /></div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                <StatCard title="Total Produits" value={artisanProducts.length} icon={<Package size={20}/>} trend="+2 ce mois" color="blue" />
+                <StatCard title="Ventes Totales" value="156" icon={<ShoppingBag size={20}/>} trend="+12% vs mois dernier" color="emerald" />
+                <StatCard title="Revenu Net" value="12 450 MAD" icon={<span className="font-bold">DH</span>} trend="+15%" color="sky" />
+                <StatCard title="Commandes" value="48" icon={<LayoutDashboard size={20}/>} trend="4 en attente" color="cyan" />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-[32px] shadow-soft border border-slate-100">
+                  <h3 className="font-heading text-lg font-bold mb-6">Produits les plus vendus</h3>
+                  <div className="space-y-4">
+                    {artisanProducts.slice(0, 3).map(p => (
+                      <div key={p.id} className="flex items-center justify-between border-b border-slate-50 pb-4">
+                        <div className="flex items-center gap-3">
+                          <img src={p.images[0]} className="w-10 h-10 rounded-xl object-cover" />
+                          <span className="text-sm font-bold text-slate-700">{p.name}</span>
+                        </div>
+                        <span className="text-sm font-black text-[#00B4D8]">{p.price} MAD</span>
+                      </div>
+                    ))}
                   </div>
-                  <span className="text-sm text-green-600 font-medium">+2 ajoutés ce mois</span>
                 </div>
-                
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-50">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <p className="text-gray-500 text-sm font-medium">Commandes en attente</p>
-                      <h3 className="font-heading text-3xl font-bold text-[var(--color-text)] mt-1">4</h3>
+                <div className="bg-white p-8 rounded-[32px] shadow-soft border border-slate-100">
+                  <h3 className="font-heading text-lg font-bold mb-6">Statut de vérification</h3>
+                  <div className={`p-6 rounded-2xl border flex items-center gap-4 ${paymentInfo.status === 'verified' ? 'bg-green-50 border-green-100' : 'bg-amber-50 border-amber-100'}`}>
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${paymentInfo.status === 'verified' ? 'bg-green-500 text-white' : 'bg-amber-500 text-white'}`}>
+                      {paymentInfo.status === 'verified' ? <CheckCircle size={24} /> : <AlertCircle size={24} />}
                     </div>
-                    <div className="p-3 bg-orange-50 text-[var(--color-primary)] rounded-lg"><ShoppingBag size={24} /></div>
-                  </div>
-                  <span className="text-sm text-red-500 font-medium whitespace-nowrap">2 urgentes</span>
-                </div>
-                
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-50">
-                  <div className="flex justify-between items-start mb-4">
                     <div>
-                      <p className="text-gray-500 text-sm font-medium">Revenus du mois</p>
-                      <h3 className="font-heading text-3xl font-bold text-[var(--color-text)] mt-1">12 450 <span className="text-lg">MAD</span></h3>
+                      <h4 className={`font-bold ${paymentInfo.status === 'verified' ? 'text-green-900' : 'text-amber-900'}`}>
+                        {paymentInfo.status === 'verified' ? 'Compte Vérifié' : 'Vérification en cours'}
+                      </h4>
+                      <p className="text-xs font-medium opacity-70">
+                        {paymentInfo.status === 'verified' ? 'Vous pouvez retirer vos gains à tout moment.' : 'Vos informations de paiement sont en cours de revue.'}
+                      </p>
                     </div>
-                    <div className="p-3 bg-green-50 text-green-600 rounded-lg"><span className="font-bold text-xl">DH</span></div>
                   </div>
-                  <span className="text-sm text-green-600 font-medium">+15% par rapport au mois dernier</span>
                 </div>
               </div>
             </div>
@@ -126,7 +189,7 @@ const ArtisanDashboard = () => {
                 </button>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-orange-50 overflow-hidden">
+              <div className="bg-white rounded-xl shadow-sm border border-cyan-50 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -138,23 +201,42 @@ const ArtisanDashboard = () => {
                         <th className="p-4 font-medium text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-slate-50">
                       {artisanProducts.map(product => (
-                        <tr key={product.id} className="hover:bg-gray-50 transition-colors group">
+                        <tr key={product.id} className="hover:bg-slate-50 transition-colors group">
                           <td className="p-4 flex items-center gap-3">
-                            <img src={product.images[0]} alt={product.name} className="w-12 h-12 rounded object-cover border border-gray-200" />
-                            <span className="font-medium text-[var(--color-text)]">{product.name}</span>
+                            <img src={product.images[0]} alt={product.name} className="w-12 h-12 rounded-xl object-cover border border-slate-100 shadow-sm" />
+                            <div>
+                              <p className="font-bold text-slate-900">{product.name}</p>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase">{product.id}</p>
+                            </div>
                           </td>
-                          <td className="p-4 text-gray-600 capitalize">{product.category}</td>
-                          <td className="p-4 font-medium text-[var(--color-primary)]">{product.price}</td>
                           <td className="p-4">
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${product.stock > 5 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                              {product.stock} unités
+                            <span className="text-xs font-bold text-slate-600 capitalize px-2 py-1 bg-slate-100 rounded-lg">{product.category}</span>
+                          </td>
+                          <td className="p-4 font-black text-slate-900">{product.price} MAD</td>
+                          <td className="p-4">
+                            <div className="flex flex-col gap-1">
+                              <span className={`text-[10px] font-black uppercase ${product.stock > 5 ? 'text-green-600' : 'text-amber-600'}`}>
+                                {product.stock} en stock
+                              </span>
+                              <div className="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                <div className={`h-full ${product.stock > 5 ? 'bg-green-500' : 'bg-amber-500'}`} style={{ width: `${Math.min(product.stock * 5, 100)}%` }} />
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border ${
+                              product.status === 'published' ? 'bg-cyan-50 text-cyan-600 border-cyan-100' : 'bg-slate-50 text-slate-400 border-slate-100'
+                            }`}>
+                              {product.status || 'Draft'}
                             </span>
                           </td>
                           <td className="p-4 text-right">
-                            <button className="text-blue-500 hover:text-blue-700 p-2"><Edit size={18} /></button>
-                            <button className="text-red-500 hover:text-red-700 p-2"><Trash2 size={18} /></button>
+                            <div className="flex justify-end gap-1">
+                              <button className="text-slate-400 hover:text-[#00B4D8] p-2 hover:bg-cyan-50 rounded-xl transition-all"><Edit size={18} /></button>
+                              <button className="text-slate-400 hover:text-red-500 p-2 hover:bg-red-50 rounded-xl transition-all"><Trash2 size={18} /></button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -165,11 +247,113 @@ const ArtisanDashboard = () => {
             </div>
           )}
 
-          {/* Placeholders for other tabs */}
-          {(activeTab === 'orders' || activeTab === 'profile') && (
-            <div className="page-enter flex flex-col items-center justify-center h-full text-center opacity-50">
-               <h2 className="font-heading text-2xl font-bold mb-2">En cours de développement</h2>
-               <p>Cette section sera disponible prochainement.</p>
+          {/* ORDERS TAB */}
+          {activeTab === 'orders' && (
+            <div className="page-enter animate-fade-in">
+              <h1 className="font-heading text-2xl font-bold mb-8">Commandes Entrantes</h1>
+              <div className="bg-white rounded-3xl shadow-soft border border-slate-100 overflow-hidden">
+                <table className="w-full text-left">
+                  <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <th className="p-6">Commande</th>
+                      <th className="p-6">Client</th>
+                      <th className="p-6">Total</th>
+                      <th className="p-6">Statut</th>
+                      <th className="p-6 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {mockOrders.map((order, i) => (
+                      <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
+                        <td className="p-6">
+                          <p className="text-sm font-black text-slate-900">#{order.id}</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase">{order.date}</p>
+                        </td>
+                        <td className="p-6">
+                          <p className="text-sm font-bold text-slate-700">{order.customer}</p>
+                        </td>
+                        <td className="p-6">
+                          <p className="text-sm font-black text-[#00B4D8]">{order.total} MAD</p>
+                        </td>
+                        <td className="p-6">
+                          <span className={`px-3 py-1 text-[10px] font-black uppercase rounded-full border ${
+                            order.status === 'delivered' ? 'bg-green-50 text-green-600 border-green-100' :
+                            order.status === 'shipped' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                            'bg-amber-50 text-amber-600 border-amber-100'
+                          }`}>
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="p-6 text-right">
+                          <button className="text-[10px] font-black uppercase text-[#00B4D8] hover:underline">Gérer</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* FINANCES TAB */}
+          {activeTab === 'finances' && (
+            <div className="page-enter animate-fade-in space-y-8">
+              <h1 className="font-heading text-2xl font-bold mb-8">Configuration des Paiements</h1>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-[40px] shadow-soft border border-slate-100">
+                  <h3 className="font-heading text-xl font-bold mb-6">Informations Bancaires</h3>
+                  <div className="space-y-4">
+                    <DashboardInput label="Nom du titulaire" value={paymentInfo.accountHolder} onChange={(val) => setPaymentInfo({...paymentInfo, accountHolder: val})} />
+                    <DashboardInput label="IBAN / Compte Bancaire" placeholder="MA96..." value={paymentInfo.iban} onChange={(val) => setPaymentInfo({...paymentInfo, iban: val})} />
+                    <div className="flex items-center gap-2 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                      <span className="text-xs font-bold text-slate-500">Devise:</span>
+                      <span className="text-xs font-black text-slate-900">Dirham Marocain (MAD)</span>
+                    </div>
+                    <button className="w-full bg-[#00B4D8] text-white py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-[#0097a7] transition-all">
+                      Enregistrer les détails
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white p-8 rounded-[40px] shadow-soft border border-slate-100">
+                  <h3 className="font-heading text-xl font-bold mb-6">Historique des Gains</h3>
+                  <div className="space-y-4">
+                    {[1, 2].map(i => (
+                      <div key={i} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div>
+                          <p className="text-sm font-black text-slate-900">Virement #{i}482</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase">Payé le 2{i} Mars</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-black text-green-600">+4 200 MAD</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase">Vérifié ✓</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SETTINGS TAB (Billing) */}
+          {activeTab === 'settings' && (
+            <div className="page-enter animate-fade-in">
+              <h1 className="font-heading text-2xl font-bold mb-8">Détails de Facturation</h1>
+              <div className="max-w-2xl bg-white p-10 rounded-[40px] shadow-soft border border-slate-100">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  <DashboardInput label="Nom de l'entreprise" value={billingInfo.businessName} onChange={(val) => setBillingInfo({...billingInfo, businessName: val})} />
+                  <DashboardInput label="N° de téléphone" value={billingInfo.phone} onChange={(val) => setBillingInfo({...billingInfo, phone: val})} />
+                </div>
+                <div className="space-y-6">
+                  <DashboardInput label="Adresse complète" value={billingInfo.address} onChange={(val) => setBillingInfo({...billingInfo, address: val})} />
+                  <DashboardInput label="Identifiant Fiscal (Optionnel)" value={billingInfo.taxId} onChange={(val) => setBillingInfo({...billingInfo, taxId: val})} />
+                  <button className="w-full bg-slate-900 text-white py-4 rounded-3xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all">
+                    Mettre à jour les informations
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -179,7 +363,7 @@ const ArtisanDashboard = () => {
       {/* Add Product Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto page-enter border border-orange-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto page-enter border border-cyan-50">
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
               <h2 className="font-heading text-xl font-bold">Ajouter un nouveau produit</h2>
               <button onClick={() => setIsAddModalOpen(false)} className="text-gray-400 hover:text-gray-700">
