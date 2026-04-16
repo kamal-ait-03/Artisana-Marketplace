@@ -7,34 +7,22 @@ import { Filter, X, SlidersHorizontal, ChevronLeft, ChevronRight, Check } from '
 
 const CatalogPage = () => {
   const { formatPrice, currency } = useCurrency();
-  const [searchParams] = useSearchParams();
-  const initialCategory = searchParams.get('category');
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   
-  // Filter states
-  const [selectedCategories, setSelectedCategories] = useState(
-    initialCategory ? [initialCategory] : []
-  );
-  const [priceRange, setPriceRange] = useState(5000);
-  const [selectedCities, setSelectedCities] = useState([]);
-  const [selectedArtisans, setSelectedArtisans] = useState([]);
-  const [sortBy, setSortBy] = useState('newest'); // newest, price-asc, price-desc, popular
-  const [currentPage, setCurrentPage] = useState(1);
+  // Filter states derived from URL
+  const selectedCategories = searchParams.getAll('category');
+  const priceRange = Number(searchParams.get('price')) || 5000;
+  const selectedCities = searchParams.getAll('city');
+  const selectedArtisans = searchParams.getAll('artisan');
+  const sortBy = searchParams.get('sort') || 'newest';
+  const currentPage = Number(searchParams.get('page')) || 1;
   const itemsPerPage = 8;
 
-  const cities = ['Safi', 'Marrakech', 'Fez', 'Meknès', 'Rabat', 'Casablanca'];
-
-  useEffect(() => {
-    const category = searchParams.get('category');
-    if (category) {
-      setSelectedCategories([category]);
-    } else {
-      setSelectedCategories([]);
-    }
-  }, [searchParams]);
+  const cities = ['Safi', 'Marrakech', 'Fez', 'Meknes', 'Rabat', 'Casablanca'];
 
   useEffect(() => {
     // Simulate API fetch
@@ -46,40 +34,50 @@ const CatalogPage = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const updateParams = (updates) => {
+    const newParams = new URLSearchParams(searchParams);
+    
+    Object.keys(updates).forEach(key => {
+      const value = updates[key];
+      if (value === null || value === undefined || (Array.isArray(value) && value.length === 0)) {
+        newParams.delete(key);
+      } else if (Array.isArray(value)) {
+        newParams.delete(key);
+        value.forEach(v => newParams.append(key, v));
+      } else {
+        newParams.set(key, value);
+      }
+    });
+
+    if (!updates.page && newParams.has('page')) {
+      newParams.set('page', 1);
+    }
+    setSearchParams(newParams);
+  };
+
   const handleCategoryChange = (categoryId) => {
-    setSelectedCategories(prev => 
-      prev.includes(categoryId) 
-        ? prev.filter(c => c !== categoryId)
-        : [...prev, categoryId]
-    );
-    setCurrentPage(1);
+    const newCats = selectedCategories.includes(categoryId) 
+      ? selectedCategories.filter(c => c !== categoryId) 
+      : [...selectedCategories, categoryId];
+    updateParams({ category: newCats });
   };
 
   const handleCityChange = (city) => {
-    setSelectedCities(prev => 
-      prev.includes(city) 
-        ? prev.filter(c => c !== city)
-        : [...prev, city]
-    );
-    setCurrentPage(1);
+    const newCities = selectedCities.includes(city) 
+      ? selectedCities.filter(c => c !== city) 
+      : [...selectedCities, city];
+    updateParams({ city: newCities });
   };
 
   const handleArtisanChange = (artisanId) => {
-    setSelectedArtisans(prev => 
-      prev.includes(artisanId) 
-        ? prev.filter(a => a !== artisanId)
-        : [...prev, artisanId]
-    );
-    setCurrentPage(1);
+    const newArts = selectedArtisans.includes(artisanId) 
+      ? selectedArtisans.filter(a => a !== artisanId) 
+      : [...selectedArtisans, artisanId];
+    updateParams({ artisan: newArts });
   };
 
   const resetFilters = () => {
-    setSelectedCategories([]);
-    setPriceRange(5000);
-    setSelectedCities([]);
-    setSelectedArtisans([]);
-    setSortBy('newest');
-    setCurrentPage(1);
+    setSearchParams(new URLSearchParams());
   };
 
   // Filter and Sort logic
@@ -93,7 +91,7 @@ const CatalogPage = () => {
     }).sort((a, b) => {
       if (sortBy === 'price-asc') return a.price - b.price;
       if (sortBy === 'price-desc') return b.price - a.price;
-      if (sortBy === 'popular') return b.reviewCount - a.reviewCount;
+      if (sortBy === 'popular') return b.reviews - a.reviews; // Fixed reviewCount to reviews based on mockData
       if (sortBy === 'newest') return (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1;
       return 0;
     });
@@ -148,7 +146,7 @@ const CatalogPage = () => {
           max="5000" 
           step="50"
           value={priceRange} 
-          onChange={(e) => { setPriceRange(Number(e.target.value)); setCurrentPage(1); }}
+          onChange={(e) => updateParams({ price: e.target.value })}
           className="w-full accent-[var(--color-primary)]"
         />
         <div className="flex justify-between text-sm text-gray-600 mt-2 font-medium">
@@ -255,7 +253,7 @@ const CatalogPage = () => {
                 <label className="text-sm text-gray-500">Sort by:</label>
                 <select 
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  onChange={(e) => updateParams({ sort: e.target.value })}
                   className="border border-gray-200 rounded-md py-1.5 px-3 bg-[var(--color-bg)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
                 >
                   <option value="newest">Newest</option>
@@ -270,12 +268,12 @@ const CatalogPage = () => {
             <div className="lg:hidden mb-6 flex justify-end">
               <select 
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  onChange={(e) => updateParams({ sort: e.target.value })}
                   className="w-full border border-gray-200 rounded-md py-2 px-3 bg-white shadow-sm focus:outline-none"
                 >
-                  <option value="newest">Trier: Newest</option>
-                  <option value="price-asc">Trier: Ascending Price</option>
-                  <option value="price-desc">Trier: Descending Price</option>
+                  <option value="newest">Sort: Newest</option>
+                  <option value="price-asc">Sort: Ascending Price</option>
+                  <option value="price-desc">Sort: Descending Price</option>
                   <option value="popular">Sort: Popularity</option>
               </select>
             </div>
@@ -304,7 +302,7 @@ const CatalogPage = () => {
                   onClick={resetFilters}
                   className="bg-[var(--color-primary)] text-white px-6 py-2 rounded font-medium"
                 >
-                  Reset les filtres
+                  Reset filters
                 </button>
               </div>
             ) : (
@@ -319,7 +317,7 @@ const CatalogPage = () => {
             {!isLoading && totalPages > 1 && (
               <div className="mt-12 flex justify-center items-center gap-2">
                 <button 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  onClick={() => updateParams({ page: Math.max(1, currentPage - 1) })}
                   disabled={currentPage === 1}
                   className="w-10 h-10 flex items-center justify-center rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -329,7 +327,7 @@ const CatalogPage = () => {
                 {[...Array(totalPages)].map((_, i) => (
                   <button 
                     key={i}
-                    onClick={() => setCurrentPage(i + 1)}
+                    onClick={() => updateParams({ page: i + 1 })}
                     className={`w-10 h-10 flex items-center justify-center rounded border font-medium ${
                       currentPage === i + 1 
                         ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white' 
@@ -341,7 +339,7 @@ const CatalogPage = () => {
                 ))}
 
                 <button 
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => updateParams({ page: Math.min(totalPages, currentPage + 1) })}
                   disabled={currentPage === totalPages}
                   className="w-10 h-10 flex items-center justify-center rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
                 >

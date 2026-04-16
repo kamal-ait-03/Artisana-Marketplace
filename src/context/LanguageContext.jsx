@@ -1,14 +1,12 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext } from 'react';
 
 const LanguageContext = createContext();
 
 export const useLanguage = () => useContext(LanguageContext);
 
 export const LanguageProvider = ({ children }) => {
-    // English is default
-    const [language, setLanguage] = useState('en');
+    const language = 'en';
 
-    // Simulate basic translations structure
     const translations = {
         en: {
             categories: 'Categories',
@@ -20,25 +18,15 @@ export const LanguageProvider = ({ children }) => {
             cart: 'Cart',
             profile: 'Profile',
             viewArtisan: 'View Artisan',
-        },
-        ar: {
-            // Future Arabic translations
         }
     };
 
-    const setLang = (lang) => {
-        setLanguage(lang);
-        // Toggle dir="rtl" for Arabic down the line
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    };
-
-    // Very basic t() function
     const t = (key) => {
-        return translations[language]?.[key] || key;
+        return translations.en[key] || key;
     };
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage: setLang, t }}>
+        <LanguageContext.Provider value={{ language, setLanguage: () => {}, t }}>
             {children}
         </LanguageContext.Provider>
     );

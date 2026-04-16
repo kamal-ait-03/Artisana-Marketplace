@@ -85,7 +85,7 @@ const CheckoutPage = () => {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check size={40} className="text-green-600" />
           </div>
-          <h2 className="font-heading text-3xl font-bold text-[var(--color-text)] mb-2">Order Confirmée !</h2>
+          <h2 className="font-heading text-3xl font-bold text-[var(--color-text)] mb-2">Order Confirmed!</h2>
           <p className="text-gray-500 mb-6">Thank you for your purchase. Your order number is <span className="font-bold text-[var(--color-text)]">ART-{Math.floor(Math.random() * 100000)}</span>.</p>
           <p className="text-sm text-gray-500 mb-8 border-t border-gray-100 pt-6">A confirmation email will be sent to you shortly.</p>
           <Link 

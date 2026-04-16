@@ -1,5 +1,5 @@
 import { useCurrency } from '../context/CurrencyContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, Package, ShoppingBag, User, Plus, Edit, Trash2, X, Upload, CheckCircle, AlertCircle } from 'lucide-react';
@@ -46,12 +46,18 @@ const DashboardInput = ({ label, value, onChange, placeholder = "", type = "text
 );
 
 const ArtisanDashboard = () => {
-  const { user, role } = useAuth();
+  const { user, role, loading, updateUser } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [artisanProducts, setArtisanProducts] = useState([]);
   
+  // New Product State
+  const [newProduct, setNewProduct] = useState({ name: '', category: '', description: '', price: '', stock: '' });
+  const [images, setImages] = useState([]);
+  const [imageError, setImageError] = useState('');
+  const fileRef = useRef(null);
+
   // Payment & Billing State
   const [paymentInfo, setPaymentInfo] = useState({
     accountHolder: '',
@@ -67,33 +73,99 @@ const ArtisanDashboard = () => {
     taxId: ''
   });
 
+  const [profileData, setProfileData] = useState({
+    name: '', bio: '', city: '', specialty: '', whatsapp: '', avatar: ''
+  });
+  const profileImageRef = useRef(null);
+
   useEffect(() => {
-    // Protected route check
-    if (!user || role !== 'artisan') {
-      navigate('/login');
+    if (user) {
+      setProfileData({
+        name: user.name || '', bio: user.bio || '', city: user.city || '',
+        specialty: user.specialty || '', whatsapp: user.whatsapp || '', avatar: user.avatar || ''
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        navigate('/login');
+      } else if (role !== 'artisan') {
+        navigate('/');
+      } else {
+        const myProducts = mockProducts.filter(p => p.artisan.name.includes(user.name.split(' ')[0]) || true).slice(0, 5);
+        setArtisanProducts(myProducts);
+      }
+    }
+  }, [user, role, loading, navigate]);
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-[#00B4D8] border-t-transparent rounded-full animate-spin"></div></div>;
+  if (!user || role !== 'artisan') return null;
+
+  const handleProfileImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Max file size is 5MB.");
       return;
     }
+    const url = URL.createObjectURL(file);
+    setProfileData(prev => ({ ...prev, avatar: url }));
+  };
 
-    // Mock filtering products by this artisan (using Hassan Safi as mock if user.name matches partially)
-    const myProducts = mockProducts.filter(p => p.artisan.name.includes(user.name.split(' ')[0]) || true).slice(0, 5); // Just grab 5 as a mock
-    setArtisanProducts(myProducts);
-  }, [user, role, navigate]);
+  const handleSaveProfile = (e) => {
+    e.preventDefault();
+    if (updateUser) updateUser(profileData);
+    alert('Profile saved!');
+  };
 
-  if (!user || role !== 'artisan') return null;
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setImageError('');
+    if (images.length + files.length > 4) {
+      setImageError('Max 4 files allowed.');
+      return;
+    }
+    const valid = [];
+    for (let f of files) {
+      if (f.size > 5 * 1024 * 1024) {
+        setImageError('Max file size is 5MB.');
+        return;
+      }
+      valid.push({ file: f, url: URL.createObjectURL(f) });
+    }
+    setImages(prev => [...prev, ...valid]);
+  };
 
   const handleAddProduct = (e) => {
     e.preventDefault();
-    // In a real app, this would append to the database
+    const created = {
+      id: `new-${Date.now()}`,
+      name: newProduct.name,
+      category: newProduct.category,
+      price: Number(newProduct.price),
+      stock: Number(newProduct.stock),
+      images: images.length > 0 ? images.map(img => img.url) : ['https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=400&q=80'],
+      status: 'published',
+      artisan: { name: user.name, id: 'a1' }
+    };
+    setArtisanProducts([created, ...artisanProducts]);
     setIsAddModalOpen(false);
-    alert('Product added successfully!');
+    setNewProduct({ name: '', category: '', description: '', price: '', stock: '' });
+    setImages([]);
+  };
+
+  const handleDeleteProduct = (id) => {
+    setArtisanProducts(prev => prev.filter(p => p.id !== id));
   };
 
   const navItems = [
-    { id: 'dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard },
-    { id: 'products', label: 'My Products', icon: Package },
-    { id: 'orders', label: 'Orders', icon: ShoppingBag },
-    { id: 'finances', label: 'Finances & Payments', icon: ShoppingBag }, // Reusing icon or change to DollarSign if available
-    { id: 'settings', label: 'Settings', icon: User },
+    { id: 'dashboard', label: 'OVERVIEW', icon: LayoutDashboard },
+    { id: 'products', label: 'MY PRODUCTS', icon: Package },
+    { id: 'orders', label: 'ORDERS', icon: ShoppingBag },
+    { id: 'finances', label: 'FINANCES', icon: ShoppingBag },
+    { id: 'settings', label: 'SETTINGS', icon: User },
   ];
 
   return (
@@ -104,7 +176,7 @@ const ArtisanDashboard = () => {
         <aside className="w-full md:w-64 bg-white border-r border-gray-200 shrink-0 overflow-y-auto">
           <div className="p-6">
             <h2 className="font-heading text-xl font-bold text-[var(--color-text)] mb-1">Artisan Dashboard</h2>
-            <p className="text-sm text-gray-500 font-body">Bonjour, {user.name}</p>
+            <p className="text-sm text-gray-500 font-body">Hello, {user.name}</p>
           </div>
           
           <nav className="mt-4">
@@ -137,7 +209,7 @@ const ArtisanDashboard = () => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                <StatCard title="Total Products" value={artisanProducts.length} icon={<Package size={20}/>} trend="+2 ce mois" color="blue" />
+                <StatCard title="Total Products" value={artisanProducts.length} icon={<Package size={20}/>} trend="+2 this month" color="blue" />
                 <StatCard title="Total Sales" value="156" icon={<ShoppingBag size={20}/>} trend="+12% vs last month" color="emerald" />
                 <StatCard title="Net Revenue" value={formatPrice(12450)} icon={<span className="font-bold">$</span>} trend="+15%" color="sky" />
                 <StatCard title="Orders" value="48" icon={<LayoutDashboard size={20}/>} trend="4 pending" color="cyan" />
@@ -237,7 +309,7 @@ const ArtisanDashboard = () => {
                           <td className="p-4 text-right">
                             <div className="flex justify-end gap-1">
                               <button className="text-slate-400 hover:text-[#00B4D8] p-2 hover:bg-cyan-50 rounded-xl transition-all"><Edit size={18} /></button>
-                              <button className="text-slate-400 hover:text-red-500 p-2 hover:bg-red-50 rounded-xl transition-all"><Trash2 size={18} /></button>
+                              <button onClick={() => handleDeleteProduct(product.id)} className="text-slate-400 hover:text-red-500 p-2 hover:bg-red-50 rounded-xl transition-all"><Trash2 size={18} /></button>
                             </div>
                           </td>
                         </tr>
@@ -252,7 +324,7 @@ const ArtisanDashboard = () => {
           {/* ORDERS TAB */}
           {activeTab === 'orders' && (
             <div className="page-enter animate-fade-in">
-              <h1 className="font-heading text-2xl font-bold mb-8">Orders Entrantes</h1>
+              <h1 className="font-heading text-2xl font-bold mb-8">Incoming Orders</h1>
               <div className="bg-white rounded-3xl shadow-soft border border-slate-100 overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-slate-50 border-b border-slate-100">
@@ -278,16 +350,14 @@ const ArtisanDashboard = () => {
                           <p className="text-sm font-black text-[#00B4D8]">{formatPrice(order.total)}</p>
                         </td>
                         <td className="p-6">
-                          <span className={`px-3 py-1 text-[10px] font-black uppercase rounded-full border ${
-                            order.status === 'delivered' ? 'bg-green-50 text-green-600 border-green-100' :
-                            order.status === 'shipped' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                            'bg-amber-50 text-amber-600 border-amber-100'
-                          }`}>
-                            {order.status}
-                          </span>
+                          <select className="px-3 py-1 text-[10px] font-black uppercase rounded-full border bg-white focus:outline-none focus:ring-1 focus:ring-[#00B4D8]" defaultValue={order.status}>
+                            <option value="pending">Pending</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                          </select>
                         </td>
                         <td className="p-6 text-right">
-                          <button className="text-[10px] font-black uppercase text-[#00B4D8] hover:underline">Gérer</button>
+                          <button className="text-[10px] font-black uppercase text-[#00B4D8] hover:underline">Manage</button>
                         </td>
                       </tr>
                     ))}
@@ -325,7 +395,7 @@ const ArtisanDashboard = () => {
                       <div key={i} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
                         <div>
                           <p className="text-sm font-black text-slate-900">Transfer #{i}482</p>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase">Paid on 2{i} Mars</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase">Paid on {i}2 March (RIB)</p>
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-black text-green-600">{formatPrice(4200)}</p>
@@ -334,28 +404,77 @@ const ArtisanDashboard = () => {
                       </div>
                     ))}
                   </div>
+                  
+                  <div className="mt-8 border-t border-slate-100 pt-6">
+                    <h4 className="font-heading text-lg font-bold mb-4">Revenue over 6 Months</h4>
+                    <div className="h-48 flex items-end justify-between gap-2">
+                        {[{m:'Jan',v:30},{m:'Feb',v:45},{m:'Mar',v:80},{m:'Apr',v:60},{m:'May',v:90},{m:'Jun',v:100}].map((d,i) => (
+                          <div key={i} className="flex flex-col items-center flex-1">
+                            <div className="w-full bg-[#00B4D8] rounded-t-lg transition-all" style={{height: `${d.v}%`}}></div>
+                            <span className="text-[10px] font-bold text-slate-400 mt-2">{d.m}</span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 flex items-center justify-between p-4 bg-cyan-50 rounded-2xl border border-cyan-100">
+                    <div>
+                      <h4 className="text-sm font-bold text-cyan-900">Next Payout Date</h4>
+                      <p className="text-xs font-medium text-cyan-700">Scheduled for 15 May via RIB</p>
+                    </div>
+                    <div className="text-xl font-black text-[#00B4D8]">
+                      {formatPrice(1200)}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* SETTINGS TAB (Billing) */}
+          {/* SETTINGS TAB */}
           {activeTab === 'settings' && (
             <div className="page-enter animate-fade-in">
-              <h1 className="font-heading text-2xl font-bold mb-8">Billing Details</h1>
-              <div className="max-w-2xl bg-white p-10 rounded-[40px] shadow-soft border border-slate-100">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <DashboardInput label="Business Name" value={billingInfo.businessName} onChange={(val) => setBillingInfo({...billingInfo, businessName: val})} />
-                  <DashboardInput label="Phone Number" value={billingInfo.phone} onChange={(val) => setBillingInfo({...billingInfo, phone: val})} />
+              <h1 className="font-heading text-2xl font-bold mb-8">Profile Settings</h1>
+              <form onSubmit={handleSaveProfile} className="max-w-2xl bg-white p-10 rounded-[40px] shadow-soft border border-slate-100">
+                <div className="flex items-center gap-6 mb-8">
+                  <div className="relative">
+                    <img src={profileData.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80'} alt="Profile" className="w-24 h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm" />
+                    <input type="file" ref={profileImageRef} accept="image/*" className="hidden" onChange={handleProfileImageUpload} />
+                    <button type="button" onClick={() => profileImageRef.current?.click()} className="absolute bottom-0 right-0 p-2 bg-[#00B4D8] text-white rounded-full shadow-lg hover:scale-110 transition-transform">
+                      <Edit size={16} />
+                    </button>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-slate-900">Profile Photo</h3>
+                    <p className="text-xs text-slate-500">JPG, PNG or WEBP. Max 5MB.</p>
+                  </div>
                 </div>
-                <div className="space-y-6">
-                  <DashboardInput label="Full Address" value={billingInfo.address} onChange={(val) => setBillingInfo({...billingInfo, address: val})} />
-                  <DashboardInput label="Tax ID (Optional)" value={billingInfo.taxId} onChange={(val) => setBillingInfo({...billingInfo, taxId: val})} />
-                  <button className="w-full bg-slate-900 text-white py-4 rounded-3xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all">
-                    Update Information
-                  </button>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <DashboardInput label="Full Name" value={profileData.name} onChange={(val) => setProfileData({...profileData, name: val})} />
+                  <DashboardInput label="Specialty" value={profileData.specialty} onChange={(val) => setProfileData({...profileData, specialty: val})} placeholder="e.g. Pottery, Leather..." />
                 </div>
-              </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <DashboardInput label="City" value={profileData.city} onChange={(val) => setProfileData({...profileData, city: val})} />
+                  <DashboardInput label="WhatsApp Number" value={profileData.whatsapp} onChange={(val) => setProfileData({...profileData, whatsapp: val})} placeholder="+212 6..." />
+                </div>
+
+                <div className="mb-8">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Short Bio</label>
+                  <textarea 
+                    value={profileData.bio}
+                    onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
+                    rows="4" 
+                    className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-3 px-6 text-sm font-bold focus:border-[#00B4D8] focus:bg-white outline-none transition-all resize-none"
+                    placeholder="Tell your story..."
+                  ></textarea>
+                </div>
+
+                <button type="submit" className="w-full bg-[#00B4D8] text-white py-4 rounded-3xl font-black text-sm uppercase tracking-widest hover:bg-[#0097a7] transition-all shadow-lg">
+                  Save Changes
+                </button>
+              </form>
             </div>
           )}
 
@@ -377,11 +496,11 @@ const ArtisanDashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block font-medium text-gray-700 mb-1">Product Title</label>
-                  <input type="text" required className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none" placeholder="Ex: Tapis Berbère..." />
+                  <input type="text" required value={newProduct.name} onChange={e => setNewProduct({...newProduct, name: e.target.value})} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none" placeholder="e.g. Berber Carpet..." />
                 </div>
                 <div>
                   <label className="block font-medium text-gray-700 mb-1">Category</label>
-                  <select required className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none bg-white">
+                  <select required value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value})} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none bg-white">
                     <option value="">Select a Category</option>
                     {categories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -392,27 +511,36 @@ const ArtisanDashboard = () => {
 
               <div>
                 <label className="block font-medium text-gray-700 mb-1">Full Description</label>
-                <textarea required rows="4" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none resize-none" placeholder="Décrivez votre produit, les matériaux utilisés, l'histoire..."></textarea>
+                <textarea required value={newProduct.description} onChange={e => setNewProduct({...newProduct, description: e.target.value})} rows="4" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none resize-none" placeholder="Describe your product, materials used, history..."></textarea>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
                   <label className="block font-medium text-gray-700 mb-1">Price ({currency})</label>
-                  <input type="number" min="0" required className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none" placeholder="0.00" />
+                  <input type="number" min="0" required value={newProduct.price} onChange={e => setNewProduct({...newProduct, price: e.target.value})} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none" placeholder="0.00" />
                 </div>
                 <div>
                   <label className="block font-medium text-gray-700 mb-1">Quantity (Stock)</label>
-                  <input type="number" min="1" required className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none" placeholder="1" />
+                  <input type="number" min="1" required value={newProduct.stock} onChange={e => setNewProduct({...newProduct, stock: e.target.value})} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-1 focus:ring-[var(--color-primary)] outline-none" placeholder="1" />
                 </div>
               </div>
 
               <div>
                 <label className="block font-medium text-gray-700 mb-1">Product Photos</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <input type="file" ref={fileRef} accept="image/*" multiple style={{display:'none'}} onChange={handleImageUpload}/>
+                <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer">
                   <Upload size={32} className="text-gray-400 mb-3" />
                   <p className="font-medium text-gray-600">Click to upload or drag your images here</p>
-                  <p className="text-xs text-gray-400 mt-1">JPG, PNG up to 5MB (Max 4 images)</p>
+                  <p className="text-xs text-gray-400 mt-1">JPG, PNG, WEBP up to 5MB (Max 4 images)</p>
                 </div>
+                {imageError && <p className="text-red-500 text-xs mt-2">{imageError}</p>}
+                {images.length > 0 && (
+                  <div className="flex gap-2 mt-4">
+                    {images.map((img, i) => (
+                      <img key={i} src={img.url} alt="preview" className="w-16 h-16 object-cover rounded-md border" />
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 border-t border-gray-100 flex justify-end gap-3">

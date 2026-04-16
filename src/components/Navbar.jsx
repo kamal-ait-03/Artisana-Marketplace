@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Phone, MapPin, Book, Scissors, Shirt, Leaf, LayoutGrid, LayoutDashboard } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Phone, MapPin, Book, Scissors, Shirt, Leaf, LayoutGrid, LayoutDashboard, Package, BarChart2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { categories } from '../data/mockData';
@@ -12,9 +12,21 @@ const Navbar = () => {
     const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const { cartItems } = useCart();
-    const { user, logout, role } = useAuth();
+    const { user, logout } = useAuth();
+    const role = user?.role;
     const navigate = useNavigate();
     const timeoutRef = useRef(null);
+    const categoryMenuRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (categoryMenuRef.current && !categoryMenuRef.current.contains(event.target)) {
+                setIsCategoryMenuOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const cartItemCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
@@ -42,6 +54,7 @@ const Navbar = () => {
     };
 
     const translations = {
+        home: 'Home',
         categories: 'Categories',
         artisans: 'Our Artisans',
         aboutUs: 'About Us',
@@ -54,6 +67,7 @@ const Navbar = () => {
     const t = translations;
 
     const navLinks = [
+        { name: t.home, path: '/' },
         { name: t.artisans, path: '/artisans' },
         { name: t.aboutUs, path: '/about' },
     ];
@@ -180,24 +194,40 @@ const Navbar = () => {
                             </button>
                             {isUserDropOpen && (
                                 <div className="absolute right-0 mt-4 w-56 bg-white rounded-3xl shadow-xl py-4 border border-slate-100 animate-fade-in z-50">
-                                    <div className="px-6 py-3 border-b border-slate-50 mb-3">
-                                        <p className="text-sm font-black text-slate-900 truncate">{user ? user.name : 'Welcome Friend'}</p>
-                                        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{role || 'Anonymous'}</p>
-                                    </div>
-                                    {user && role === 'artisan' && (
-                                        <Link to="/dashboard" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold border-b border-slate-50 mb-1">
-                                            <LayoutDashboard size={18} className="text-[#00B4D8]" /> 
-                                            Tableau de Bord
-                                        </Link>
-                                    )}
                                     {user ? (
-                                        <button onClick={handleLogout} className="w-full text-left px-6 py-2.5 text-sm text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors font-bold">
-                                            <LogOut size={18} /> Sign Out
-                                        </button>
+                                        <>
+                                            <div className="px-6 py-3 border-b border-slate-50 mb-3 flex flex-col items-center">
+                                                <div className="w-12 h-12 bg-[#00B4D8] text-white rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-md">
+                                                    {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                                                </div>
+                                                <p className="text-sm font-black text-slate-900 truncate w-full text-center">{user.name}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{role || 'CLIENT'}</p>
+                                            </div>
+                                            {(role === 'artisan' || role === 'seller' || role === 'vendor') && (
+                                                <Link to="/dashboard" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
+                                                    <BarChart2 size={16} className="text-[#00BCD4]" /> Seller Dashboard
+                                                </Link>
+                                            )}
+                                            <Link to="#" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
+                                                <User size={16} className="text-[#00BCD4]" /> My Profile
+                                            </Link>
+                                            <Link to="#" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold border-b border-slate-50 mb-1 pb-3">
+                                                <Package size={16} className="text-[#00BCD4]" /> My Orders
+                                            </Link>
+                                            <button onClick={handleLogout} className="w-full text-left px-6 py-2.5 text-sm text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors font-bold">
+                                                <LogOut size={16} className="text-red-500" /> Logout
+                                            </button>
+                                        </>
                                     ) : (
-                                        <Link to="/login" className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
-                                            <User size={18} className="text-[#00B4D8]" /> Sign In / Log In
-                                        </Link>
+                                        <>
+                                            <div className="px-6 py-3 border-b border-slate-50 mb-3 text-center">
+                                                <p className="text-sm font-black text-slate-900 truncate">Welcome Artisan</p>
+                                                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Anonymous</p>
+                                            </div>
+                                            <Link to="/login" className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
+                                                <User size={18} className="text-[#00B4D8]" /> Login
+                                            </Link>
+                                        </>
                                     )}
                                 </div>
                             )}
@@ -226,6 +256,7 @@ const Navbar = () => {
 
             {/* ── MEGA MENU (Categories Overlay) ── */}
             <div 
+                ref={categoryMenuRef}
                 className={`absolute top-full left-0 w-full bg-white shadow-2xl border-t border-slate-50 transition-all duration-500 z-40 overflow-hidden ${isCategoryMenuOpen ? 'h-[420px] opacity-100 pointer-events-auto' : 'h-0 opacity-0 pointer-events-none'}`}
                 onMouseEnter={enterCategoryMenu}
                 onMouseLeave={leaveCategoryMenu}
@@ -290,13 +321,17 @@ const Navbar = () => {
 
                     <div className="h-px bg-slate-100" />
                     
+                    <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
+                        Home <ChevronDown size={20} className="-rotate-90 text-slate-300" />
+                    </Link>
+
                     <Link to="/artisans" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
                         Our Artisans <ChevronDown size={20} className="-rotate-90 text-slate-300" />
                     </Link>
 
-                    {role === 'artisan' ? (
+                    {(role === 'artisan' || role === 'seller' || role === 'vendor') ? (
                         <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-[#00B4D8] flex items-center justify-between">
-                            Dashboard <ChevronDown size={20} className="-rotate-90" />
+                            Seller Dashboard <ChevronDown size={20} className="-rotate-90" />
                         </Link>
                     ) : (
                         <Link to="/become-seller" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
@@ -311,8 +346,8 @@ const Navbar = () => {
                     <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold flex items-center gap-4 text-slate-800 bg-slate-50 p-6 rounded-[32px]">
                         <User size={24} className="text-[#00B4D8]" /> 
                         <div className="flex flex-col">
-                            <span>Sign In</span>
-                            <span className="text-[10px] text-slate-400">Manage your profile</span>
+                            <span>Login</span>
+                            <span className="text-[10px] text-slate-400">Manage your account</span>
                         </div>
                     </Link>
 
