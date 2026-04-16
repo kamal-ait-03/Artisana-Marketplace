@@ -49,7 +49,7 @@ const ArtisansPage = () => {
           <div className="grid grid-cols-3 gap-6 text-center max-w-2xl mx-auto">
             {[
               { value: '500+', label: 'Active Artisans' },
-              { value: '12', label: 'Citys du Morocco' },
+              { value: '12', label: 'Cities in Morocco' },
               { value: '2 000+', label: 'Unique Creations' },
             ].map(stat => (
               <div key={stat.label}>
@@ -130,6 +130,13 @@ const ArtisansPage = () => {
                     <MapPin size={14} className="text-[#00BCD4]" />
                     <span className="font-bold">{artisan.city}, Morocco</span>
                   </div>
+                  {artisan.whatsapp && (
+                     <div className="flex items-center gap-1.5 text-green-500 text-sm mb-4">
+                       <a href={`https://wa.me/212${artisan.whatsapp.replace(/\D/g, '').substring(3)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
+                         WhatsApp <ArrowRight size={14} />
+                       </a>
+                     </div>
+                  )}
 
                   <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6 bg-slate-50 p-4 rounded-2xl italic">
                     "{artisan.bio}"

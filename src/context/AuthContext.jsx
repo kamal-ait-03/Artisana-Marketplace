@@ -5,68 +5,50 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('artisana_user');
-    return saved ? JSON.parse(saved) : null;
-  });
-  
-  const [role, setRole] = useState(() => {
-    const savedRole = localStorage.getItem('artisana_role');
-    return savedRole ? savedRole : null;
-  });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('artisana_user', JSON.stringify(user));
-      localStorage.setItem('artisana_role', role);
-    } else {
-      localStorage.removeItem('artisana_user');
-      localStorage.removeItem('artisana_role');
-    }
-  }, [user, role]);
+    const u = localStorage.getItem('user');
+    if (u) setUser(JSON.parse(u));
+    setLoading(false);
+  }, []);
 
   const login = async (credentials) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
-        // Mock authentication
+        let loggedInUser;
         if (credentials.email.includes('artisan')) {
-          const artisanUser = { id: 'au1', name: 'Hassan Safi', email: credentials.email };
-          setUser(artisanUser);
-          setRole('artisan');
-          resolve(artisanUser);
-        } else if (credentials.email.includes('admin')) {
-          const adminUser = { id: 'ad1', name: 'Admin', email: credentials.email };
-          setUser(adminUser);
-          setRole('admin');
-          resolve(adminUser);
+          loggedInUser = { name: 'Hassan Safi', email: credentials.email, role: 'artisan', shopName: 'Artisan Store' };
         } else {
-          const clientUser = { id: 'cu1', name: 'Client Cherif', email: credentials.email };
-          setUser(clientUser);
-          setRole('client');
-          resolve(clientUser);
+          loggedInUser = { name: 'Client', email: credentials.email, role: 'client' };
         }
-      }, 500); // simulate network delay
+        localStorage.setItem('user', JSON.stringify(loggedInUser));
+        setUser(loggedInUser);
+        resolve(loggedInUser);
+      }, 500);
     });
   };
 
   const logout = () => {
+    localStorage.removeItem('user');
     setUser(null);
-    setRole(null);
+    window.location.href = '/login';
   };
 
   const register = async (data) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const newUser = { id: 'u' + Date.now(), name: data.name, email: data.email };
+        const newUser = { id: 'u' + Date.now(), ...data };
+        localStorage.setItem('user', JSON.stringify(newUser));
         setUser(newUser);
-        setRole(data.role || 'client');
         resolve(newUser);
       }, 500);
     });
   };
 
   return (
-    <AuthContext.Provider value={{ user, role, login, logout, register }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, register, setUser }}>
       {children}
     </AuthContext.Provider>
   );

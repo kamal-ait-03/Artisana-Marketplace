@@ -38,7 +38,7 @@ const emptyProduct = () => ({
 
 const SellerRegisterPage = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { setUser } = useAuth();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -85,7 +85,7 @@ const SellerRegisterPage = () => {
 
   /* ── Static options ── */
   const specialties = ['Pottery', 'Carpets', 'Leather', 'Clothing', 'Beauty', 'Decoration', 'Other'];
-  const cities = ['Safi', 'Marrakech', 'Fès', 'Meknès', 'Rabat', 'Other'];
+  const cities = ['Safi', 'Marrakech', 'Fez', 'Meknes', 'Rabat', 'Other'];
   const experiences = ['<1yr', '1-3yrs', '3-10yrs', '10+yrs'];
   const productCategories = ['Pottery', 'Carpets', 'Leather', 'Clothing', 'Beauty', 'Decoration', 'Other'];
 
@@ -149,8 +149,16 @@ const SellerRegisterPage = () => {
   /* ─────────────────────────────────────────────
      NAVIGATION
   ───────────────────────────────────────────── */
-  const nextStep = () => { if (validateStep(step)) setStep(p => p + 1); };
-  const prevStep = () => setStep(p => p - 1);
+  const nextStep = () => { 
+    if (validateStep(step)) {
+      setStep(p => p + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+  const prevStep = () => { 
+    setStep(p => p - 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   /* ─────────────────────────────────────────────
      INPUT HANDLERS
@@ -173,6 +181,10 @@ const SellerRegisterPage = () => {
   const handleFileUpload = (e, type) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({ ...prev, [type + 'Photo']: 'Max 5MB limit.' }));
+        return;
+      }
       setFormData(prev => ({ ...prev, [type + 'Photo']: file }));
       setPreviews(prev => ({ ...prev, [type]: URL.createObjectURL(file) }));
       if (errors[type + 'Photo']) setErrors(prev => ({ ...prev, [type + 'Photo']: null }));
@@ -211,12 +223,20 @@ const SellerRegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await register({
-      name: `${formData.firstName} ${formData.lastName}`,
-      email: formData.email,
-      role: 'artisan',
-    });
-    setTimeout(() => { setIsSubmitting(false); setIsSubmitted(true); }, 1500);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      const newUser = {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        role: 'artisan',
+        shopName: formData.shopName,
+        specialty: formData.specialty,
+        city: formData.city
+      };
+      localStorage.setItem('user', JSON.stringify(newUser));
+      if (setUser) setUser(newUser);
+      navigate('/dashboard');
+    }, 1500);
   };
 
   /* ─────────────────────────────────────────────

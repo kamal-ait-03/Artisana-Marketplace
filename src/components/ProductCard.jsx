@@ -43,6 +43,19 @@ const ProductCard = ({ product }) => {
                     src={product.images[0]} 
                     alt={product.name} 
                     className="w-full h-full object-cover p-2 rounded-[24px] transition-transform duration-700 group-hover:scale-110"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      const map = {
+                        pottery: 'photo-1594736797933-d0501ba2fe65',
+                        leather: 'photo-1548036328-c9fa89d128fa',
+                        clothing: 'photo-1558618666-fcd25c85cd64',
+                        beauty: 'photo-1608248543803-ba4f8c70ae0b',
+                        carpets: 'photo-1600166898405-da9535204843',
+                        decoration: 'photo-1565193566173-7a0ee3dbe261'
+                      };
+                      const id = map[product.category] || 'photo-1594736797933-d0501ba2fe65';
+                      e.target.src = `https://images.unsplash.com/${id}?w=400&q=80`;
+                    }}
                 />
                 
                 {/* Wishlist Button (Circle pill) */}

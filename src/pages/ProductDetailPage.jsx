@@ -75,6 +75,19 @@ const ProductDetailPage = () => {
                 src={mainImage} 
                 alt={product.name} 
                 className="w-full h-full object-cover transition-transform duration-500 easy-out hover:scale-110 cursor-zoom-in"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  const map = {
+                    pottery: 'photo-1594736797933-d0501ba2fe65',
+                    leather: 'photo-1548036328-c9fa89d128fa',
+                    clothing: 'photo-1558618666-fcd25c85cd64',
+                    beauty: 'photo-1608248543803-ba4f8c70ae0b',
+                    carpets: 'photo-1600166898405-da9535204843',
+                    decoration: 'photo-1565193566173-7a0ee3dbe261'
+                  };
+                  const id = map[product.category] || 'photo-1594736797933-d0501ba2fe65';
+                  e.target.src = `https://images.unsplash.com/${id}?w=400&q=80`;
+                }}
               />
             </div>
             
@@ -235,7 +248,7 @@ const ProductDetailPage = () => {
                     <div className="flex gap-3">
                       <Truck size={20} className="text-[var(--color-primary)] shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-bold text-sm">Shipping partout au Morocco (2-5 jours)</p>
+                        <p className="font-bold text-sm">Shipping across Morocco (2-5 days)</p>
                         <p className="text-sm text-gray-600">Secure packaging to protect craftsmanship.</p>
                       </div>
                     </div>

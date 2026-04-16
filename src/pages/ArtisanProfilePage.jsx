@@ -22,7 +22,7 @@ const ArtisanProfilePage = () => {
   if (!artisan) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Artisan non trouvé</p>
+        <p className="text-gray-500">Artisan not found</p>
       </div>
     );
   }
@@ -61,7 +61,7 @@ const ArtisanProfilePage = () => {
               <div className="flex items-center gap-4 text-slate-500 font-bold mb-6">
                 <div className="flex items-center gap-1.5">
                   <MapPin size={18} className="text-[#00BCD4]" />
-                  <span>{artisan.city}, Maroc</span>
+                  <span>{artisan.city}, Morocco</span>
                 </div>
                 <div className="h-4 w-px bg-slate-200" />
                 <div className="flex items-center gap-1.5 text-amber-500">
@@ -87,7 +87,7 @@ const ArtisanProfilePage = () => {
                   </div>
                   <div>
                     <p className="text-xl font-black text-slate-900">{artisan.sales}</p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Ventes</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sales</p>
                   </div>
                 </div>
 
@@ -97,14 +97,14 @@ const ArtisanProfilePage = () => {
                   rel="noopener noreferrer"
                   className="ml-auto bg-[#25D366] text-white px-8 py-4 rounded-3xl font-black flex items-center gap-3 shadow-lg hover:translate-y-[-4px] transition-all"
                 >
-                  <MessageCircle size={24} /> Contactez-moi
+                  <MessageCircle size={24} /> Contact Me
                 </a>
               </div>
             </div>
           </div>
 
           <div className="mt-12 pt-12 border-t border-slate-100">
-            <h2 className="font-heading text-2xl font-bold text-slate-900 mb-6">Mon histoire</h2>
+            <h2 className="font-heading text-2xl font-bold text-slate-900 mb-6">My Story</h2>
             <div className="max-w-3xl">
               <p className="text-slate-600 leading-relaxed text-lg italic border-l-4 border-[#00BCD4] pl-6 py-2">
                 "{artisan.bio}"

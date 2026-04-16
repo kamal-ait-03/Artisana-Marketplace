@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider } from './context/LanguageContext';
@@ -8,6 +9,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import CurrencyToggle from './components/CurrencyToggle';
+import ScrollToTop from './components/ScrollToTop';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -17,7 +19,7 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ArtisanDashboard from './pages/ArtisanDashboard';
+import SellerDashboard from './pages/vendor/SellerDashboard';
 import ArtisansPage from './pages/ArtisansPage';
 import ArtisanProfilePage from './pages/ArtisanProfilePage';
 import AboutPage from './pages/AboutPage';
@@ -32,6 +34,8 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <BrowserRouter>
+          <ScrollToTop />
+          <Toaster position="top-center" />
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow pt-20">
@@ -43,7 +47,7 @@ function App() {
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/dashboard" element={<ArtisanDashboard />} />
+                <Route path="/dashboard" element={<SellerDashboard />} />
                 <Route path="/artisans" element={<ArtisansPage />} />
                 <Route path="/artisans/:id" element={<ArtisanProfilePage />} />
                 <Route path="/about" element={<AboutPage />} />
@@ -54,12 +58,11 @@ function App() {
             </main>
             <Footer />
             <BackToTop />
-            <CurrencyToggle />
           </div>
         </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
-          </CurrencyProvider>
+        </CartProvider>
+      </AuthProvider>
+      </CurrencyProvider>
     </LanguageProvider>
   );
 }
