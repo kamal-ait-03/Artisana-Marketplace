@@ -64,18 +64,17 @@ const AboutPage = () => {
       <section className="relative bg-[var(--color-primary)] text-white pt-8 pb-24 overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-zellige pointer-events-none" />
         <div className="container mx-auto px-4 md:px-8 relative z-10">
-          <div className="max-w-3xl">
+          <div className="max-w-6xl mx-auto text-center">
             <span className="font-accent text-[var(--color-secondary)] tracking-widest uppercase text-sm mb-4 block">
               Our Story
             </span>
-            <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Artisana Shop,<br />
-              <span className="text-[var(--color-secondary)]">The Soul of Morocco Online</span>
+            <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6 leading-tight text-[#0b6b74]">
+              The Soul of Morocco Online
             </h1>
-            <p className="font-body text-white/80 text-lg leading-relaxed max-w-2xl">
+            <p className="font-body text-white/85 text-xl md:text-2xl leading-relaxed max-w-[1200px] mx-auto">
               Artisana Shop was born from a simple observation: the wonders of Moroccan craftsmanship deserve to be shared with the world. Founded in 2022, our platform connects master artisans from Marrakech, Fez, Safi and all over Morocco with customers who appreciate the beauty of "handmade".
             </p>
-            <div className="flex flex-wrap gap-4 mt-8">
+            <div className="flex flex-wrap gap-4 mt-8 justify-center">
               <Link to="/catalog" className="bg-[var(--color-secondary)] text-white px-8 py-3 rounded font-medium hover:bg-[#b88c3a] transition-colors shadow-lg">
                 View Catalog
               </Link>

@@ -101,15 +101,7 @@ const Navbar = () => {
             <div className={`bg-[#00B4D8] text-white py-2 px-4 transition-all duration-500 overflow-hidden text-xs md:text-sm hidden md:block ${isScrolled ? 'h-0 py-0 opacity-0' : 'h-10 opacity-100'}`}>
                 <div className="container mx-auto flex justify-between items-center relative">
                     <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-1.5"><Phone size={14} /> +212 522478936</span>
-                        <span className="mx-2 opacity-30">|</span>
-                        <div className="flex items-center gap-1.5 cursor-pointer hover:underline"><MapPin size={14} /> Global Delivery from Morocco</div>
-                    </div>
-                    <div className="flex items-center gap-4 text-[10px] md:text-sm">
-                        <span className="opacity-90 font-medium italic">{t.motto}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1.5 cursor-pointer hover:underline">🇲🇦 Morocco</div>
+                        {/* Removed all text content */}
                     </div>
                 </div>
             </div>
@@ -208,10 +200,10 @@ const Navbar = () => {
                                                     <BarChart2 size={16} className="text-[#00BCD4]" /> Seller Dashboard
                                                 </Link>
                                             )}
-                                            <Link to="#" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
+                                            <Link to="/profile" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
                                                 <User size={16} className="text-[#00BCD4]" /> My Profile
                                             </Link>
-                                            <Link to="#" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold border-b border-slate-50 mb-1 pb-3">
+                                            <Link to="/orders" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold border-b border-slate-50 mb-1 pb-3">
                                                 <Package size={16} className="text-[#00BCD4]" /> My Orders
                                             </Link>
                                             <button onClick={handleLogout} className="w-full text-left px-6 py-2.5 text-sm text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors font-bold">
@@ -352,8 +344,7 @@ const Navbar = () => {
                     </Link>
 
                     <div className="mt-auto space-y-6">
-                        <div className="flex items-center gap-3 text-slate-500 font-bold text-xs"><MapPin size={16} /> Marrakech, Morocco</div>
-                        <div className="flex items-center gap-3 text-slate-500 font-bold text-xs"><Phone size={16} /> +212 522478936</div>
+                        {/* Removed phone number and location */}
                     </div>
                 </div>
             </div>
