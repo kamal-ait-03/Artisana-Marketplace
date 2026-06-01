@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Phone, MapPin, Book, Scissors, Shirt, Leaf, LayoutGrid, LayoutDashboard, Package, BarChart2 } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Phone, MapPin, Book, Scissors, Shirt, Leaf, LayoutGrid, LayoutDashboard, Package, BarChart2, Store, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { categories } from '../data/mockData';
@@ -10,6 +10,7 @@ const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isUserDropOpen, setIsUserDropOpen] = useState(false);
     const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const { cartItems } = useCart();
     const { user, logout } = useAuth();
@@ -97,23 +98,6 @@ const Navbar = () => {
 
     return (
         <header className="fixed top-0 w-full z-50 transition-all duration-300">
-            {/* Top Tier (Utility) */}
-            <div className={`bg-[#00B4D8] text-white py-2 px-4 transition-all duration-500 overflow-hidden text-xs md:text-sm hidden md:block ${isScrolled ? 'h-0 py-0 opacity-0' : 'h-10 opacity-100'}`}>
-                <div className="container mx-auto flex justify-between items-center relative">
-                    <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-1.5"><Phone size={14} /> +212 522478936</span>
-                        <span className="mx-2 opacity-30">|</span>
-                        <div className="flex items-center gap-1.5 cursor-pointer hover:underline"><MapPin size={14} /> Global Delivery from Morocco</div>
-                    </div>
-                    <div className="flex items-center gap-4 text-[10px] md:text-sm">
-                        <span className="opacity-90 font-medium italic">{t.motto}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1.5 cursor-pointer hover:underline">🇲🇦 Morocco</div>
-                    </div>
-                </div>
-            </div>
-
             {/* Main Nav */}
             <div className={`w-full bg-white transition-all duration-300 relative ${isScrolled ? 'shadow-soft py-2' : 'py-4 shadow-sm'}`}>
                 <div className="container mx-auto px-4 md:px-8 flex items-center justify-between relative">
@@ -178,60 +162,49 @@ const Navbar = () => {
 
                     {/* Right Utility Icons */}
                     <div className="flex items-center gap-4 lg:gap-8">
-                        <Link 
-                            to="/become-seller"
-                            className="hidden md:flex items-center justify-center bg-[#00BCD4] text-white px-5 py-2.5 rounded-full font-black text-xs uppercase tracking-widest shadow-lg hover:bg-[#0097a7] transition-all hover:scale-105 active:scale-95"
-                        >
-                            Become a Seller
-                        </Link>
-                        <div className="relative hidden lg:block">
+                        {user ? (
+                            <div className="relative hidden lg:block">
+                                <button 
+                                    onClick={() => setIsUserDropOpen(!isUserDropOpen)}
+                                    className="flex flex-col items-center group"
+                                >
+                                    <User size={20} className="text-slate-800 group-hover:text-[#00B4D8] transition-colors" />
+                                    <span className="text-[10px] font-bold text-slate-500 group-hover:text-[#00B4D8] uppercase mt-1">{t.profile}</span>
+                                </button>
+                                {isUserDropOpen && (
+                                    <div className="absolute right-0 mt-4 w-56 bg-white rounded-3xl shadow-xl py-4 border border-slate-100 animate-fade-in z-50">
+                                        <div className="px-6 py-3 border-b border-slate-50 mb-3 flex flex-col items-center">
+                                            <div className="w-12 h-12 bg-[#00B4D8] text-white rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-md">
+                                                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                                            </div>
+                                            <p className="text-sm font-black text-slate-900 truncate w-full text-center">{user.name}</p>
+                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{role || 'CLIENT'}</p>
+                                        </div>
+                                        {(role === 'artisan' || role === 'seller' || role === 'vendor') && (
+                                            <Link to="/dashboard" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
+                                                <BarChart2 size={16} className="text-[#00BCD4]" /> Seller Dashboard
+                                            </Link>
+                                        )}
+                                        <Link to="#" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
+                                            <User size={16} className="text-[#00BCD4]" /> My Profile
+                                        </Link>
+                                        <Link to="#" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold border-b border-slate-50 mb-1 pb-3">
+                                            <Package size={16} className="text-[#00BCD4]" /> My Orders
+                                        </Link>
+                                        <button onClick={handleLogout} className="w-full text-left px-6 py-2.5 text-sm text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors font-bold">
+                                            <LogOut size={16} className="text-red-500" /> Logout
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
                             <button 
-                                onClick={() => setIsUserDropOpen(!isUserDropOpen)}
-                                className="flex flex-col items-center group"
+                                onClick={() => setIsRegisterModalOpen(true)}
+                                className="hidden md:flex items-center justify-center bg-[#00BCD4] text-white px-5 py-2.5 rounded-full font-black text-xs uppercase tracking-widest shadow-lg hover:bg-[#0097a7] transition-all hover:scale-105 active:scale-95"
                             >
-                                <User size={20} className="text-slate-800 group-hover:text-[#00B4D8] transition-colors" />
-                                <span className="text-[10px] font-bold text-slate-500 group-hover:text-[#00B4D8] uppercase mt-1">{t.profile}</span>
+                                Create an Account
                             </button>
-                            {isUserDropOpen && (
-                                <div className="absolute right-0 mt-4 w-56 bg-white rounded-3xl shadow-xl py-4 border border-slate-100 animate-fade-in z-50">
-                                    {user ? (
-                                        <>
-                                            <div className="px-6 py-3 border-b border-slate-50 mb-3 flex flex-col items-center">
-                                                <div className="w-12 h-12 bg-[#00B4D8] text-white rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-md">
-                                                    {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                                                </div>
-                                                <p className="text-sm font-black text-slate-900 truncate w-full text-center">{user.name}</p>
-                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{role || 'CLIENT'}</p>
-                                            </div>
-                                            {(role === 'artisan' || role === 'seller' || role === 'vendor') && (
-                                                <Link to="/dashboard" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
-                                                    <BarChart2 size={16} className="text-[#00BCD4]" /> Seller Dashboard
-                                                </Link>
-                                            )}
-                                            <Link to="#" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
-                                                <User size={16} className="text-[#00BCD4]" /> My Profile
-                                            </Link>
-                                            <Link to="#" onClick={() => setIsUserDropOpen(false)} className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold border-b border-slate-50 mb-1 pb-3">
-                                                <Package size={16} className="text-[#00BCD4]" /> My Orders
-                                            </Link>
-                                            <button onClick={handleLogout} className="w-full text-left px-6 py-2.5 text-sm text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors font-bold">
-                                                <LogOut size={16} className="text-red-500" /> Logout
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="px-6 py-3 border-b border-slate-50 mb-3 text-center">
-                                                <p className="text-sm font-black text-slate-900 truncate">Welcome Artisan</p>
-                                                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Anonymous</p>
-                                            </div>
-                                            <Link to="/login" className="px-6 py-2.5 text-sm text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors font-bold">
-                                                <User size={18} className="text-[#00B4D8]" /> Login
-                                            </Link>
-                                        </>
-                                    )}
-                                </div>
-                            )}
-                        </div>
+                        )}
 
                         <Link to="/cart" className="flex flex-col items-center group relative pt-1">
                             <ShoppingCart size={20} className="text-slate-800 group-hover:text-[#00B4D8] transition-colors" />
@@ -334,9 +307,12 @@ const Navbar = () => {
                             Seller Dashboard <ChevronDown size={20} className="-rotate-90" />
                         </Link>
                     ) : (
-                        <Link to="/become-seller" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
-                            Become a Seller <ChevronDown size={20} className="-rotate-90 text-slate-300" />
-                        </Link>
+                        <button 
+                            onClick={() => { setIsMobileMenuOpen(false); setIsRegisterModalOpen(true); }}
+                            className="text-2xl font-black text-slate-900 flex items-center justify-between text-left w-full"
+                        >
+                            Create an Account <ChevronDown size={20} className="-rotate-90 text-slate-300" />
+                        </button>
                     )}
 
                     <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-black text-slate-900 flex items-center justify-between">
@@ -357,6 +333,87 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
+
+            {/* ── ROLE SELECTION MODAL ── */}
+            {isRegisterModalOpen && (
+                <div 
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) setIsRegisterModalOpen(false);
+                    }}
+                >
+                    <div className="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl p-8 md:p-12 relative overflow-hidden animate-slide-up border border-slate-100">
+                        {/* Close Button */}
+                        <button 
+                            onClick={() => setIsRegisterModalOpen(false)}
+                            className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors z-10"
+                        >
+                            <X size={24} className="text-slate-400" />
+                        </button>
+
+                        <div className="text-center mb-8">
+                            <h2 className="text-3xl font-black text-slate-900 mb-2">Create an Account</h2>
+                            <p className="text-slate-500 font-medium">Select the type of account you want to create to get started</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Client Account Card */}
+                            <div className="group flex flex-col items-center justify-between p-8 rounded-[32px] border-2 border-slate-100 hover:border-[#00BCD4] hover:bg-[#00BCD4]/5 transition-all duration-300">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-16 h-16 bg-[#00BCD4]/10 rounded-2xl flex items-center justify-center text-[#00BCD4] mb-4 group-hover:scale-110 transition-transform">
+                                        <ShoppingBag size={32} />
+                                    </div>
+                                    <h3 className="text-xl font-black text-slate-900 mb-2">Client Account</h3>
+                                    <p className="text-sm text-slate-500 font-medium leading-relaxed mb-6">
+                                        Browse and buy authentic Moroccan crafts
+                                    </p>
+                                </div>
+                                <button 
+                                    onClick={() => {
+                                        setIsRegisterModalOpen(false);
+                                        navigate('/register?role=client');
+                                    }}
+                                    className="w-full bg-[#00BCD4] text-white py-3 rounded-full font-black text-xs uppercase tracking-widest hover:bg-[#0097a7] transition-all shadow-md hover:shadow-lg active:scale-95"
+                                >
+                                    Continue
+                                </button>
+                            </div>
+
+                            {/* Seller Account Card */}
+                            <div className="group flex flex-col items-center justify-between p-8 rounded-[32px] border-2 border-slate-100 hover:border-[#00BCD4] hover:bg-[#00BCD4]/5 transition-all duration-300">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-16 h-16 bg-[#00BCD4]/10 rounded-2xl flex items-center justify-center text-[#00BCD4] mb-4 group-hover:scale-110 transition-transform">
+                                        <Store size={32} />
+                                    </div>
+                                    <h3 className="text-xl font-black text-slate-900 mb-2">Seller Account</h3>
+                                    <p className="text-sm text-slate-500 font-medium leading-relaxed mb-6">
+                                        List and sell your handmade products
+                                    </p>
+                                </div>
+                                <button 
+                                    onClick={() => {
+                                        setIsRegisterModalOpen(false);
+                                        navigate('/register?role=seller');
+                                    }}
+                                    className="w-full bg-[#00BCD4] text-white py-3 rounded-full font-black text-xs uppercase tracking-widest hover:bg-[#0097a7] transition-all shadow-md hover:shadow-lg active:scale-95"
+                                >
+                                    Continue
+                                </button>
+                            </div>
+                        </div>
+
+                        <p className="text-slate-500 font-bold text-sm mt-8 text-center">
+                            Already have an account?{' '}
+                            <button 
+                                onClick={() => { setIsRegisterModalOpen(false); navigate('/login'); }}
+                                className="text-[#00BCD4] hover:underline"
+                            >
+                                Login
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            )}
         </header>
     );
 };

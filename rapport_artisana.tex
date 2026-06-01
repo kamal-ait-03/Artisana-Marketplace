@@ -1,0 +1,284 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{acronym}
+\usepackage{tocbibind}
+\usepackage{fancyhdr}
+
+\geometry{a4paper, margin=2.5cm}
+\setstretch{1.2}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={Rapport de Projet - Artisana Shop},
+}
+
+\begin{document}
+
+% Page de garde
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large \textbf{École Nationale des Sciences Appliquées de Safi (ENSA Safi)}\par}
+    \vspace{0.5cm}
+    {\large \textbf{Filière : GIIA1}\par}
+    
+    \vspace{4cm}
+    {\Huge \bfseries Rapport de Mini Projet\par}
+    \vspace{1.5cm}
+    {\huge \bfseries Artisana Shop\par}
+    \vspace{0.5cm}
+    {\Large Plateforme e-commerce pour l'artisanat\par}
+    
+    \vspace{4cm}
+    \begin{flushleft}
+        \large
+        \textbf{Réalisé par :}\\
+        \textit{[Votre Nom et Prénom]}
+    \end{flushleft}
+    
+    \vfill
+    {\large Année Universitaire 2023-2024\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+
+%---------------------------------------------------------
+\chapter*{Remerciement}
+\addcontentsline{toc}{chapter}{Remerciement}
+Je tiens à exprimer ma profonde gratitude à toutes les personnes qui ont contribué au succès de ce projet. Mes remerciements vont tout d'abord à mon encadrant pour ses conseils précieux et son orientation tout au long de la réalisation de ce travail. Je remercie également le corps professoral de l'ENSA Safi pour la qualité de l'enseignement dispensé, qui m'a fourni les bases nécessaires à l'accomplissement de ce mini-projet. Enfin, merci à ma famille et à mes collègues pour leur soutien inconditionnel.
+
+%---------------------------------------------------------
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+Ce projet porte sur la conception et le développement de la plateforme "Artisana Shop", une application web e-commerce dédiée à la valorisation et à la vente de produits artisanaux (poterie, cuir, bijoux, etc.). L'objectif principal est de fournir un espace numérique connectant directement les artisans avec les clients. L'application offre une interface utilisateur moderne et réactive, développée avec React et Tailwind CSS, ainsi qu'un tableau de bord complet pour les artisans. Le backend est assuré par Supabase, offrant une gestion robuste des données, de l'authentification et du stockage. Le présent rapport détaille les phases d'analyse, de conception (UML et Merise), et de réalisation technique du projet.
+
+%---------------------------------------------------------
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+This project focuses on the design and development of the "Artisana Shop" platform, an e-commerce web application dedicated to promoting and selling artisanal products (pottery, leather, jewelry, etc.). The main objective is to provide a digital space connecting artisans directly with customers. The application features a modern and responsive user interface developed with React and Tailwind CSS, as well as a comprehensive dashboard for artisans. The backend is powered by Supabase, offering robust data management, authentication, and storage capabilities. This report details the analysis, design (UML and Merise), and technical implementation phases of the project.
+
+%---------------------------------------------------------
+\listoffigures
+\addcontentsline{toc}{chapter}{Table des figures}
+
+%---------------------------------------------------------
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+
+%---------------------------------------------------------
+\chapter*{Liste des Acronymes}
+\addcontentsline{toc}{chapter}{Liste des Acronymes}
+\begin{acronym}
+    \acro{API}{Application Programming Interface}
+    \acro{CSS}{Cascading Style Sheets}
+    \acro{HTML}{HyperText Markup Language}
+    \acro{JS}{JavaScript}
+    \acro{MCC}{Modèle Conceptuel de Communication}
+    \acro{MCD}{Modèle Conceptuel de Données}
+    \acro{MCT}{Modèle Conceptuel de Traitement}
+    \acro{MLD}{Modèle Logique de Données}
+    \acro{SGBD}{Système de Gestion de Base de Données}
+    \acro{UI}{User Interface}
+    \acro{UML}{Unified Modeling Language}
+    \acro{UX}{User Experience}
+\end{acronym}
+
+%---------------------------------------------------------
+\tableofcontents
+
+\clearpage
+\pagenumbering{arabic}
+
+%---------------------------------------------------------
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
+L'artisanat constitue un pilier fondamental de l'économie et de la culture marocaine. Cependant, de nombreux artisans peinent à trouver des canaux de distribution modernes pour promouvoir leurs créations à une plus grande échelle. Dans ce contexte, la digitalisation du commerce artisanal se présente comme une solution incontournable.
+
+Le projet "Artisana Shop" a été initié dans le but de combler ce fossé en créant une marketplace en ligne moderne et professionnelle. L'objectif est double : d'une part, offrir aux artisans une vitrine virtuelle facile à utiliser pour gérer leur boutique et leurs commandes ; d'autre part, proposer aux clients une expérience d'achat fluide, sécurisée et agréable pour découvrir et acquérir des produits authentiques.
+
+Ce rapport retrace l'ensemble des étapes de développement de ce mini-projet. Il s'articule autour de trois chapitres principaux. Le premier chapitre définit le contexte et les besoins du projet. Le deuxième chapitre est consacré à l'analyse et à la conception du système en utilisant les méthodologies Merise et UML. Enfin, le troisième chapitre présente l'environnement technologique adopté et illustre les différentes interfaces de l'application réalisée.
+
+%=========================================================
+\chapter{Contexte général du projet}
+
+\section{Introduction}
+Ce premier chapitre est dédié à la présentation du cadre général dans lequel s'inscrit le projet "Artisana Shop". Nous y définirons les objectifs globaux, avant de détailler de manière exhaustive les exigences du système à travers les besoins fonctionnels et non fonctionnels. Enfin, nous présenterons le planning de réalisation sous forme d'un diagramme de Gantt.
+
+\section{Besoins fonctionnels}
+Les besoins fonctionnels décrivent les actions que le système doit être capable d'exécuter. Notre plateforme cible trois catégories d'utilisateurs principales : le Client, l'Artisan (vendeur) et l'Administrateur.
+
+\subsection{Fonctionnalités Client :}
+\begin{itemize}
+    \item S'inscrire et s'authentifier sur la plateforme.
+    \item Parcourir le catalogue des produits par catégories (Poterie, Cuir, Bijoux, etc.).
+    \item Consulter les détails d'un produit (images, description, prix, artisan).
+    \item Ajouter ou retirer des produits de son panier.
+    \item Valider une commande et remplir les informations de livraison.
+    \item Consulter l'historique de ses commandes.
+\end{itemize}
+
+\subsection{Fonctionnalités Artisan}
+\begin{itemize}
+    \item Créer un compte artisan et renseigner les informations de sa boutique.
+    \item Accéder à un tableau de bord (Dashboard) personnalisé.
+    \item Ajouter, modifier ou supprimer des produits de son catalogue.
+    \item Suivre et gérer le statut des commandes reçues (En attente, Expédiée, Livrée).
+    \item Consulter les statistiques de ventes de sa boutique.
+\end{itemize}
+
+\subsection{Fonctionnalités Administrateur}
+\begin{itemize}
+    \item Gérer les comptes utilisateurs (clients et artisans).
+    \item Valider les nouvelles inscriptions d'artisans.
+    \item Gérer les catégories de produits disponibles sur le site.
+    \item Superviser l'activité globale de la plateforme.
+\end{itemize}
+
+\section{Les Besoins Non Fonctionnels}
+Les besoins non fonctionnels définissent les critères de qualité du système :
+\begin{itemize}
+    \item \textbf{Ergonomie et UX/UI :} L'interface doit être intuitive, attrayante et facile à naviguer, avec un design moderne (respectant la charte graphique cyan existante).
+    \item \textbf{Responsive Design :} Le site doit être parfaitement utilisable sur les terminaux mobiles, les tablettes et les ordinateurs de bureau.
+    \item \textbf{Performances :} Les temps de chargement doivent être optimisés, notamment pour l'affichage des images des produits.
+    \item \textbf{Sécurité :} La protection des données utilisateurs et la sécurisation des mots de passe (hachage) sont primordiales.
+    \item \textbf{Disponibilité :} L'application doit être accessible en continu.
+\end{itemize}
+
+\section{Diagramme de Gantt}
+Afin d'assurer le bon déroulement du projet, une planification rigoureuse a été établie. Le développement a été divisé en plusieurs sprints allant de l'analyse des besoins au déploiement. \textit{(Remarque : Insérer ici l'image du diagramme de Gantt via la commande \texttt{\textbackslash includegraphics[width=\textbackslash textwidth]\{chemin/vers/image.png\}})}
+
+%=========================================================
+\chapter{Analyse et Conception}
+
+\section{Introduction}
+L'étape d'analyse et de conception est cruciale pour structurer l'architecture logicielle et la base de données. Pour ce projet, nous avons adopté une approche hybride combinant la méthode Merise pour la robustesse de la modélisation des données, et le langage UML pour la modélisation orientée objet des traitements.
+
+\section{Merise pour la Modélisation du Système}
+Merise est une méthode d'analyse, de conception et de gestion de projet informatique. Elle offre une approche systémique séparant les données et les traitements, ce qui est idéal pour concevoir notre base de données relationnelle.
+
+\section{Les Différents Modèles de Merise}
+
+\subsection{Modèle Conceptuel de Communication (MCC)}
+Le MCC permet de modéliser les flux d'informations entre les différents acteurs du système (Client, Artisan, Système, Banque). Il met en évidence les interactions majeures comme la demande d'inscription, l'envoi de confirmation de commande, etc.
+
+\subsection{Modèle Conceptuel de Traitement (MCT)}
+Le MCT décrit la dynamique du système, indépendamment de l'organisation physique. Il détaille les opérations déclenchées par les événements (ex: Validation du panier $\rightarrow$ Opération de création de commande $\rightarrow$ Notification à l'artisan).
+
+\subsection{Modèle Conceptuel de Données (MCD)}
+Le MCD représente la structure sémantique des données. Il identifie les entités principales (Utilisateur, Produit, Commande, Catégorie) et les associations qui les relient (Un client passe une ou plusieurs commandes, un produit appartient à une catégorie).
+
+\subsection{L’intérêt pour notre projet}
+L'utilisation de Merise nous a permis de garantir l'intégrité de notre base de données relationnelle (PostgreSQL via Supabase) en évitant les redondances et en assurant la cohérence des données e-commerce.
+
+\section{Langage de Modélisation Unifié (UML)}
+
+\subsection{Définition}
+UML (Unified Modeling Language) est un langage de modélisation graphique standardisé. Contrairement à Merise, il est orienté objet et permet de visualiser l'architecture logicielle du projet.
+
+\subsection{L’intérêt pour notre projet}
+UML est parfaitement adapté au développement moderne avec React. Il nous a permis d'illustrer les cas d'utilisation des différents acteurs et de modéliser le comportement de nos composants front-end.
+
+\section{Conception et Modélisation des Données}
+
+\subsection{Modèle Conceptuel des Données (MCD)}
+Le MCD d'Artisana Shop comprend principalement :
+\begin{itemize}
+    \item L'entité \textbf{User} (id, nom, email, rôle).
+    \item L'entité \textbf{Product} (id, titre, description, prix, stock).
+    \item L'entité \textbf{Order} (id, date, statut, total).
+    \item L'entité \textbf{Category} (id, nom).
+\end{itemize}
+
+\subsection{Le Dictionnaire de Données}
+Le dictionnaire de données recense toutes les propriétés (attributs) du système. Par exemple : \texttt{product\_price} (Numérique, prix d'un article), \texttt{user\_email} (Chaîne de caractères, identifiant de connexion).
+
+\subsection{Liste des Relations}
+\begin{itemize}
+    \item Un Artisan \textit{propose} (1,n) des Produits.
+    \item Un Produit \textit{appartient} (1,1) à une Catégorie.
+    \item Un Client \textit{passe} (0,n) des Commandes.
+    \item Une Commande \textit{contient} (1,n) des Produits (Ligne de commande).
+\end{itemize}
+
+\subsection{Modèle Logique de Données (MLD)}
+Le passage au MLD se traduit par la création de tables relationnelles. Les relations complexes génèrent des clés étrangères. Par exemple, la table \texttt{Products} contient une clé étrangère \texttt{artisan\_id} pointant vers la table \texttt{Users}.
+
+\subsection{Modélisation de Traitement (UML)}
+Nous avons réalisé plusieurs diagrammes UML, notamment le \textbf{diagramme de cas d'utilisation} qui résume les interactions des utilisateurs avec le système (Gérer catalogue, Passer commande), et le \textbf{diagramme de séquence} illustrant le processus d'authentification et de paiement.
+
+%=========================================================
+\chapter{Présentation des Technologies et du Site Web}
+
+\section{Environnement Logiciel}
+
+\subsection{Outils de développement}
+La réalisation de ce projet s'est appuyée sur des outils modernes :
+\begin{itemize}
+    \item \textbf{Visual Studio Code} : Éditeur de code principal.
+    \item \textbf{Git \& GitHub} : Pour le contrôle de version et le travail collaboratif.
+    \item \textbf{Vite} : Outil de build front-end offrant un démarrage ultra-rapide et un Hot Module Replacement (HMR) optimisé.
+\end{itemize}
+
+\subsection{Stack technologique}
+L'application repose sur des technologies robustes et performantes :
+\begin{itemize}
+    \item \textbf{React.js} : Bibliothèque JavaScript pour la création d'interfaces utilisateurs dynamiques basées sur des composants.
+    \item \textbf{Tailwind CSS} : Framework CSS utilitaire permettant de concevoir un design sur-mesure, responsive et élégant.
+    \item \textbf{Supabase} : Alternative open-source à Firebase, fournissant une base de données PostgreSQL complète, une gestion d'authentification et un système de stockage de fichiers (images des produits).
+\end{itemize}
+
+\section{Présentation du Site Web}
+
+\subsection{Partie Utilisateur}
+L'interface client a été pensée pour offrir la meilleure expérience possible :
+\begin{itemize}
+    \item \textbf{Page d'accueil} : Un "Hero section" avec un carrousel dynamique, mettant en avant les catégories phares (Poterie, Cuir) et les produits populaires.
+    \item \textbf{Catalogue} : Une page permettant de filtrer les produits, avec des cartes produits (Cards) affichant l'image, le prix et le nom de l'artisan.
+    \item \textbf{Processus d'achat} : Un panier interactif et un tunnel de commande simplifié avec validation de formulaire.
+\end{itemize}
+\textit{(Remarque : Insérer ici des captures d'écran de l'accueil et du catalogue)}
+
+\subsection{Partie Administrateur}
+Le tableau de bord (Dashboard) Artisan permet une gestion centralisée :
+\begin{itemize}
+    \item \textbf{Vue d'ensemble} : Statistiques des revenus et du nombre de commandes.
+    \item \textbf{Gestion des produits} : Formulaires d'ajout et de modification de produits avec upload d'images.
+    \item \textbf{Suivi des commandes} : Tableau récapitulatif permettant de changer le statut des commandes en cours.
+\end{itemize}
+\textit{(Remarque : Insérer ici des captures d'écran du Dashboard Artisan)}
+
+%=========================================================
+\chapter*{Conclusion Générale}
+\addcontentsline{toc}{chapter}{Conclusion Générale}
+La réalisation de la plateforme "Artisana Shop" s'est révélée être une expérience particulièrement enrichissante. Elle nous a permis de mettre en pratique nos connaissances théoriques en analyse conceptuelle (Merise, UML) et d'acquérir de solides compétences techniques sur des outils modernes tels que React, Tailwind CSS et Supabase.
+
+Nous avons réussi à développer une solution fonctionnelle répondant aux besoins exprimés : offrir aux artisans une vitrine numérique performante et aux clients une expérience d'achat agréable. Bien que le cahier des charges initial ait été respecté, le projet reste ouvert à de nombreuses améliorations. Les perspectives futures incluent l'intégration d'une passerelle de paiement en ligne (type Stripe), la mise en place d'un système de recommandation basé sur l'historique d'achat, et le développement d'une application mobile native pour élargir davantage l'accessibilité de la plateforme.
+
+%=========================================================
+\begin{thebibliography}{9}
+\addcontentsline{toc}{chapter}{Bibliographie}
+\bibitem{react} Documentation officielle de React, \url{https://react.dev/}
+\bibitem{supabase} Documentation officielle de Supabase, \url{https://supabase.com/docs}
+\bibitem{tailwind} Documentation officielle de Tailwind CSS, \url{https://tailwindcss.com/}
+\bibitem{merise} \emph{La méthode Merise, principes et outils}, Hubert Tardieu, Arnold Rochfeld, René Colletti.
+\bibitem{uml} Documentation officielle UML (OMG), \url{https://www.uml.org/}
+\end{thebibliography}
+
+\end{document}

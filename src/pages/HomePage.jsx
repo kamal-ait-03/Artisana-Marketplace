@@ -92,18 +92,6 @@ const HomePage = () => {
                                     Learn More
                                 </Link>
                             </div>
-
-                            <div className="flex items-center gap-8 pt-6 border-t border-slate-100">
-                                <div className="flex flex-col">
-                                    <span className="text-2xl font-bold text-slate-900">24k+</span>
-                                    <span className="text-xs text-slate-400 font-bold uppercase">Products Sold</span>
-                                </div>
-                                <div className="w-px h-10 bg-slate-100" />
-                                <div className="flex flex-col">
-                                    <span className="text-2xl font-bold text-slate-900">500+</span>
-                                    <span className="text-xs text-slate-400 font-bold uppercase">Local Artisans</span>
-                                </div>
-                            </div>
                         </div>
 
                         {/* ── Right: Cinematic Carousel ── */}

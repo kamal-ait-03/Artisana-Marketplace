@@ -26,21 +26,14 @@ const values = [
 
 const team = [
   {
-    name: 'Karim El Mansouri',
+    name: 'Kamal Ait Hammou',
     role: 'Co-founder & CEO',
     city: 'Casablanca',
     img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop',
     quote: "Our mission is to put Moroccan craftsmanship at the heart of modern commerce.",
   },
   {
-    name: 'Salma Benali',
-    role: 'Co-founder & Design Lead',
-    city: 'Marrakech',
-    img: 'https://images.unsplash.com/photo-1531123897727-8f129e1bf78c?q=80&w=300&auto=format&fit=crop',
-    quote: "Every interface we create must reflect the beauty and warmth of our culture.",
-  },
-  {
-    name: 'Amine Tazi',
+    name: 'Zakaria Ait Hamou',
     role: 'Artisan Director',
     city: 'Fez',
     img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop',
@@ -190,7 +183,7 @@ const AboutPage = () => {
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">Our Team</h2>
             <div className="h-1 w-24 bg-[var(--color-secondary)] mx-auto rounded" />
           </div>
-          <div className="grid sm:grid-cols-3 gap-10 max-w-4xl mx-auto">
+          <div className="grid sm:grid-cols-2 gap-10 max-w-2xl mx-auto">
             {team.map(member => (
               <div key={member.name} className="text-center">
                 <img
