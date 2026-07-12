@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
 const BackToTop = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isAtBottom, setIsAtBottom] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);  // eslint-disable-line no-unused-vars
+  const [isAtBottom, setIsAtBottom] = useState(false); // eslint-disable-line no-unused-vars
 
   useEffect(() => {
     const handleScroll = () => {

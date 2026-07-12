@@ -30,10 +30,48 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/ProfilePage';
 import OrdersPage from './pages/OrdersPage';
 
+
+import { useEffect, useState } from 'react'
+import { supabase } from './lib/supabaseClient'
+
+
+
 function AppContent() {
+
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [PRODUCTS, setProducts] = useState([]);
+
+ useEffect(() => {
+  const fetchAllProducts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+
+      if (error) {
+        console.error('❌ Error fetching products:', error.message)
+      } else {
+        setProducts(data)  // replace mock data completely
+        console.log('✅ All products loaded:', data)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsDataLoaded(true)
+    }
+  }
+
+  fetchAllProducts()
+}, [])
+
   const { user } = useAuth();
 
+  if (!isDataLoaded) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   return (
+    
     <BrowserRouter>
       <ScrollToTop />
       <Toaster position="top-center" />
@@ -60,6 +98,7 @@ function AppContent() {
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+         
         </main>
         <Footer />
         <BackToTop />

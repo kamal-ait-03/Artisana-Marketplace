@@ -31,11 +31,11 @@ const Navbar = () => {
     const cartItemCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
     const categoryMetaData = {
-        pottery: { bgImage: '/categories/pottery.jpg', desc: 'Hand-painted Safi ceramics' },
-        leather: { bgImage: '/categories/leather.jpg', desc: 'Hand-tanned leather from Fès' },
-        clothing: { bgImage: '/categories/clothing.jpg', desc: 'Traditional caftans & djellabas' },
-        beauty: { bgImage: '/categories/beauty.jpg', desc: 'Pure Argan & natural elixirs' },
-        carpets: { bgImage: '/categories/carpets.jpg', desc: 'Symbols of Moroccan heritage' },
+        pottery: { bgImage: '/assets/categories/c_pottery.jpg', desc: 'Hand-painted Safi ceramics' },
+        leather: { bgImage: '/assets/categories/c_leather.jpg', desc: 'Hand-tanned leather from Fès' },
+        clothing: { bgImage: '/assets/categories/c_clothing.jpg', desc: 'Traditional caftans & djellabas' },
+        beauty: { bgImage: '/assets/categories/c_beauty.jpg', desc: 'Pure Argan & natural elixirs' },
+        carpets: { bgImage: '/assets/categories/c_carpets.jpg', desc: 'Symbols of Moroccan heritage' },
     };
 
     useEffect(() => {

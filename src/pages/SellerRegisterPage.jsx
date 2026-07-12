@@ -84,10 +84,10 @@ const SellerRegisterPage = () => {
   const [products, setProducts] = useState([emptyProduct()]);
 
   /* ── Static options ── */
-  const specialties = ['Pottery', 'Carpets', 'Leather', 'Clothing', 'Beauty', 'Decoration', 'Other'];
+  const specialties = ['Pottery', 'Carpets', 'Leather', 'Clothing', 'Beauty', 'Other'];
   const cities = ['Safi', 'Marrakech', 'Fez', 'Meknes', 'Rabat', 'Other'];
   const experiences = ['<1yr', '1-3yrs', '3-10yrs', '10+yrs'];
-  const productCategories = ['Pottery', 'Carpets', 'Leather', 'Clothing', 'Beauty', 'Decoration', 'Other'];
+  const productCategories = ['Pottery', 'Carpets', 'Leather', 'Clothing', 'Beauty', 'Other'];
 
   /* ─────────────────────────────────────────────
      VALIDATION

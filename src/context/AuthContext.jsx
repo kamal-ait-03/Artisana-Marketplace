@@ -1,18 +1,22 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+    return context;
+};
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const u = localStorage.getItem('user');
-    if (u) setUser(JSON.parse(u));
-    setLoading(false);
-  }, []);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [loading] = useState(false);
 
   const login = async (credentials) => {
     return new Promise((resolve) => {

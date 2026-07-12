@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { categories, mockProducts, artisans } from '../data/mockData';
+import { supabase } from '../lib/supabaseClient';
+import { artisans, categories } from '../data/mockData';
 import { ArrowRight, Star, ShoppingBag, Truck, ShieldCheck } from 'lucide-react';
 
-import potteryImg from '../assets/categories/pottery.jpg';
-import leatherImg from '../assets/categories/leather.jpg';
+const potteryImg = '/assets/categories/c_pottery.jpg';
+const leatherImg = '/assets/categories/c_leather.jpg';
 
-import img1 from '../assets/craftsmen/pottery-painter.jpg';
-import img2 from '../assets/craftsmen/carpet-weaver.jpg';
-import img3 from '../assets/craftsmen/metal-engraver.jpg';
-import img4 from '../assets/craftsmen/wood-carver.jpg';
-import img5 from '../assets/craftsmen/pottery-wheel.jpg';
+const img1 = '/assets/craftsmen/pottery-painter.jpg';
+const img2 = '/assets/craftsmen/carpet-weaver.jpg';
+const img3 = '/assets/craftsmen/metal-engraver.jpg';
+const img4 = '/assets/craftsmen/wood-carver.jpg';
+const img5 = '/assets/craftsmen/pottery-wheel.jpg';
 
 const slides = [
   { src: img1, caption: 'Traditional Pottery of Safi' },
@@ -21,13 +22,42 @@ const slides = [
   { src: img5, caption: 'Moroccan Ceramics' },
 ];
 
+const ZelligeBackground = ({ className = '' }) => (
+    <div className={`absolute inset-0 bg-zellige opacity-10 pointer-events-none ${className}`} />
+);
+
 const HomePage = () => {
     const [active, setActive] = useState(0);
-    const [paused, setPaused] = useState(false);
     const [kenKey, setKenKey] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
 
-    const featuredProducts = mockProducts.filter(p => p.isFeatured).slice(0, 8);
+    const [featuredProducts, setFeaturedProducts] = useState([]);
     const homeArtisans = artisans.slice(0, 3);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const { data, error } = await supabase.from('products').select('*, artisan_profiles(*), categories(*)').limit(8);
+            if (!error && data) {
+                const mapped = data.map(p => ({
+                    id: p.id,
+                    name: p.title || p.name,
+                    price: p.price || 0,
+                    category: p.categories?.slug || p.category_id || 'unknown',
+                    images: p.images && p.images.length > 0 ? p.images : ['https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600&q=80'],
+                    rating: p.rating || 5.0,
+                    reviews: p.reviews || 0,
+                    isNew: p.is_active,
+                    artisan: p.artisan_profiles ? {
+                        id: p.artisan_profiles.user_id || p.artisan_profiles.id,
+                        name: p.artisan_profiles.company_name || p.artisan_profiles.first_name || 'Artisan',
+                        avatar: p.artisan_profiles.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
+                    } : { id: 'unknown', name: 'Local Artisan', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop' }
+                }));
+                setFeaturedProducts(mapped);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     const categoryImages = {
         pottery:    potteryImg,
@@ -38,19 +68,15 @@ const HomePage = () => {
         decoration: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=200&q=80',
     };
 
-    const ZelligeBackground = ({ className = '' }) => (
-        <div className={`absolute inset-0 bg-zellige opacity-10 pointer-events-none ${className}`} />
-    );
-
-    // ── Auto-advance every 3.5 seconds, pause on hover ──
+    // ── Auto-advance every 3.5 seconds in a loop ──
     useEffect(() => {
-        if (paused) return;
+        const delay = isHovered ? 1000 : 3500;
         const interval = setInterval(() => {
             setActive(prev => (prev + 1) % slides.length);
             setKenKey(k => k + 1);
-        }, 3500);
+        }, delay);
         return () => clearInterval(interval);
-    }, [paused]);
+    }, [isHovered]);
 
     const goTo = (idx) => {
         setActive(idx);
@@ -95,12 +121,12 @@ const HomePage = () => {
 
                             <div className="flex items-center gap-8 pt-6 border-t border-slate-100">
                                 <div className="flex flex-col">
-                                    <span className="text-2xl font-bold text-slate-900">24k+</span>
+                                    <span className="text-2xl font-bold text-slate-900">200+</span>
                                     <span className="text-xs text-slate-400 font-bold uppercase">Products Sold</span>
                                 </div>
                                 <div className="w-px h-10 bg-slate-100" />
                                 <div className="flex flex-col">
-                                    <span className="text-2xl font-bold text-slate-900">500+</span>
+                                    <span className="text-2xl font-bold text-slate-900">50+</span>
                                     <span className="text-xs text-slate-400 font-bold uppercase">Local Artisans</span>
                                 </div>
                             </div>
@@ -113,14 +139,14 @@ const HomePage = () => {
                             <div
                                 className="relative z-10 rounded-[40px] overflow-hidden shadow-2xl"
                                 style={{ aspectRatio: '4/5' }}
-                                onMouseEnter={() => setPaused(true)}
-                                onMouseLeave={() => setPaused(false)}
+                                onMouseEnter={() => setIsHovered(true)}
+                                onMouseLeave={() => setIsHovered(false)}
                             >
                                 {/* All slides stacked — crossfade via opacity */}
                                 {slides.map((slide, i) => (
                                     <div
                                         key={i}
-                                        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                                        className={`group absolute inset-0 transition-opacity duration-700 ease-in-out ${
                                             i === active ? 'opacity-100' : 'opacity-0'
                                         }`}
                                         style={{ zIndex: i === active ? 2 : 1 }}
@@ -130,7 +156,7 @@ const HomePage = () => {
                                             key={`img-${i}-${kenKey}`}
                                             src={slide.src}
                                             alt={slide.caption}
-                                            className="w-full h-full object-cover animate-kenburns"
+                                            className="w-full h-full object-cover animate-kenburns transition-transform duration-1000 ease-out group-hover:scale-110"
                                         />
                                         {/* Cinematic dark-bottom gradient */}
                                         <div
@@ -308,15 +334,18 @@ const HomePage = () => {
                             { Icon: Truck,        title: 'Fast Delivery',   body: 'Safe and reliable shipping to over 20 countries worldwide.' },
                             { Icon: ShieldCheck,  title: 'Secure Payment',  body: 'Encrypted transactions via global leading payment providers.' },
                             { Icon: ShoppingBag,  title: 'Local Support',   body: 'Direct contribution to the wellbeing of Moroccan artisans.' },
-                        ].map(({ Icon, title, body }) => (
-                            <div key={title} className="flex flex-col items-center text-center text-white space-y-4">
+                        ].map((item) => {
+                            const IconComponent = item.Icon;
+                            return (
+                            <div key={item.title} className="flex flex-col items-center text-center text-white space-y-4">
                                 <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-2">
-                                    <Icon size={32} />
+                                    <IconComponent size={32} />
                                 </div>
-                                <h3 className="text-xl font-bold">{title}</h3>
-                                <p className="text-white/80 text-sm">{body}</p>
+                                <h3 className="text-xl font-bold">{item.title}</h3>
+                                <p className="text-white/80 text-sm">{item.body}</p>
                             </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </section>

@@ -2,11 +2,12 @@ import { useCurrency } from '../context/CurrencyContext';
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import { supabase } from '../lib/supabaseClient';
 import { mockProducts, categories as initialCategories, artisans } from '../data/mockData';
 import { Filter, X, SlidersHorizontal, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 
 const CatalogPage = () => {
-  const { formatPrice, currency } = useCurrency();
+  const { formatPrice } = useCurrency();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState([]);
@@ -25,13 +26,40 @@ const CatalogPage = () => {
   const cities = ['Safi', 'Marrakech', 'Fez', 'Meknes', 'Rabat', 'Casablanca'];
 
   useEffect(() => {
-    // Simulate API fetch
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setProducts(mockProducts);
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
+    const fetchCatalogProducts = async () => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase.from('products').select('*, artisan_profiles(*), categories(*)');
+        if (!error && data) {
+           const mappedProducts = data.map(p => ({
+            id: p.id,
+            name: p.title || p.name,
+            price: p.price || 0,
+            category: p.categories?.slug || p.category_id || 'unknown',
+            images: p.images && p.images.length > 0 ? p.images : ['https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600&q=80'],
+            rating: p.rating || 5.0,
+            reviews: p.reviews || 0,
+            isNew: p.is_active,
+            artisan: p.artisan_profiles ? {
+              id: p.artisan_profiles.user_id || p.artisan_profiles.id,
+              name: p.artisan_profiles.company_name || p.artisan_profiles.first_name || 'Artisan',
+              city: p.artisan_profiles.city || 'Marrakech',
+              avatar: p.artisan_profiles.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
+            } : { id: 'unknown', name: 'Local Artisan', city: 'Safi', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop' }
+          }));
+          setProducts(mappedProducts);
+        } else {
+          console.error("Supabase error:", error);
+          setProducts(mockProducts);
+        }
+      } catch (err) {
+        console.error("Fetch try-catch error:", err);
+        setProducts(mockProducts);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCatalogProducts();
   }, []);
 
   const updateParams = (updates) => {

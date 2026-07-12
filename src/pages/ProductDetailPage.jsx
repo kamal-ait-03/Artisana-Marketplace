@@ -1,14 +1,14 @@
 import { useCurrency } from '../context/CurrencyContext';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockProducts } from '../data/mockData';
+import { supabase } from '../lib/supabaseClient';
 import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 import CategoryBadge from '../components/CategoryBadge';
 import { Star, Minus, Plus, ShoppingCart, CreditCard, ChevronDown, ChevronUp, Truck, ShieldCheck, MapPin, MessageCircle, ExternalLink } from 'lucide-react';
 
 const ProductDetailPage = () => {
-  const { formatPrice, currency } = useCurrency();
+  const { formatPrice} = useCurrency();
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -20,30 +20,93 @@ const ProductDetailPage = () => {
   const [similarProducts, setSimilarProducts] = useState([]);
 
   useEffect(() => {
-    // Find product
-    const found = mockProducts.find(p => p.id === id);
-    if (found) {
-      setProduct(found);
-      setMainImage(found.images[0]);
-      
-      // Get similar products (same category, different ID)
-      const similar = mockProducts
-        .filter(p => p.category === found.category && p.id !== found.id)
-        .slice(0, 4);
-      
-      // If not enough similar, pad with others
-      if (similar.length < 4) {
-        const padding = mockProducts
-          .filter(p => p.id !== found.id && !similar.includes(p))
-          .slice(0, 4 - similar.length);
-        setSimilarProducts([...similar, ...padding]);
-      } else {
-        setSimilarProducts(similar);
+    const fetchProductDetails = async () => {
+      try {
+        // Fetch product from Supabase
+        const { data: found, error } = await supabase
+          .from('products')
+          // Assuming there might be a relationship, but we select all basic fields first
+          .select('*, artisan_profiles(*), categories(*)')
+          .eq('id', id)
+          .single();
+
+        if (error || !found) {
+          console.error('Error fetching product:', error);
+          navigate('/404');
+          return;
+        }
+
+        // Map data to match component expectations
+        const mappedProduct = {
+          id: found.id,
+          name: found.title || found.name,
+          category: found.categories?.slug || found.category_id || 'unknown',
+          price: found.price || 0,
+          images: found.images && found.images.length > 0 ? found.images : ['https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600&q=80'],
+          stock: found.stock_quantity ?? found.stock ?? 10,
+          description: found.description || '',
+          rating: found.rating || 5.0,
+          reviewCount: found.reviews || 0,
+          artisan: found.artisan_profiles ? {
+            id: found.artisan_profiles.user_id || found.artisan_profiles.id,
+            name: found.artisan_profiles.company_name || found.artisan_profiles.first_name || 'Artisan',
+            city: found.artisan_profiles.city || 'Morocco',
+            specialty: found.artisan_profiles.specialty || 'Crafts',
+            rating: found.artisan_profiles.rating || 4.8,
+            avatar: found.artisan_profiles.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
+            bio: found.artisan_profiles.bio || 'Experienced artisanal crafted goods maker.',
+            whatsapp: found.artisan_profiles.whatsapp || '212600000000',
+          } : {
+            id: 'unknown',
+            name: 'Local Artisan',
+            city: 'Morocco',
+            specialty: 'Handicrafts',
+            rating: 4.8,
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
+            bio: 'Experienced artisanal crafted goods maker.',
+            whatsapp: '212600000000'
+          }
+        };
+
+        setProduct(mappedProduct);
+        setMainImage(mappedProduct.images[0]);
+
+        // Get similar products
+        const { data: similarData, error: similarError } = await supabase
+          .from('products')
+          .select('*, artisan_profiles(*), categories(*)')
+          .eq('category_id', found.category_id)
+          .neq('id', found.id)
+          .limit(4);
+
+        if (!similarError && similarData) {
+          const similar = similarData.map(p => ({
+            id: p.id,
+            name: p.title || p.name,
+            category: p.categories?.slug || p.category_id || 'unknown',
+            price: p.price || 0,
+            images: p.images && p.images.length > 0 ? p.images : ['https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600&q=80'],
+            stock: p.stock_quantity ?? p.stock ?? 10,
+            description: p.description || '',
+            rating: p.rating || 5.0,
+            reviewCount: p.reviews || 0,
+            artisan: p.artisan_profiles ? {
+              id: p.artisan_profiles.user_id || p.artisan_profiles.id,
+              name: p.artisan_profiles.company_name || p.artisan_profiles.first_name || 'Artisan',
+              avatar: p.artisan_profiles.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
+            } : { id: 'unknown', name: 'Local Artisan', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop' }
+          }));
+          setSimilarProducts(similar);
+        }
+
+        window.scrollTo(0, 0);
+      } catch (err) {
+        console.error('Exception fetching product:', err);
+        navigate('/404');
       }
-      window.scrollTo(0, 0);
-    } else {
-      navigate('/404'); // Product not found
-    }
+    };
+
+    fetchProductDetails();
   }, [id, navigate]);
 
   if (!product) return <div className="min-h-screen"></div>;
@@ -82,8 +145,7 @@ const ProductDetailPage = () => {
                     leather: 'photo-1548036328-c9fa89d128fa',
                     clothing: 'photo-1558618666-fcd25c85cd64',
                     beauty: 'photo-1608248543803-ba4f8c70ae0b',
-                    carpets: 'photo-1600166898405-da9535204843',
-                    decoration: 'photo-1565193566173-7a0ee3dbe261'
+                    carpets: 'photo-1600166898405-da9535204843'
                   };
                   const id = map[product.category] || 'photo-1594736797933-d0501ba2fe65';
                   e.target.src = `https://images.unsplash.com/${id}?w=400&q=80`;
