@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext';
 import PropTypes from 'prop-types';
 
 const ProductCard = ({ product }) => {
-  const { formatPrice, currency } = useCurrency();
+  const { formatPrice } = useCurrency();
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const [isHovered, setIsHovered] = useState(false);
@@ -50,8 +50,7 @@ const ProductCard = ({ product }) => {
                         leather: 'photo-1548036328-c9fa89d128fa',
                         clothing: 'photo-1558618666-fcd25c85cd64',
                         beauty: 'photo-1608248543803-ba4f8c70ae0b',
-                        carpets: 'photo-1600166898405-da9535204843',
-                        decoration: 'photo-1565193566173-7a0ee3dbe261'
+                        carpets: 'photo-1600166898405-da9535204843'
                       };
                       const id = map[product.category] || 'photo-1594736797933-d0501ba2fe65';
                       e.target.src = `https://images.unsplash.com/${id}?w=400&q=80`;

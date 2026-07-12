@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
@@ -14,7 +15,7 @@ export const CartProvider = ({ children }) => {
         return parsed
           .filter(item => item && item.product && item.product.id)
           .map(item => ({ ...item, qty: item.qty || 1 }));
-      } catch (e) {
+        } catch {
         return [];
       }
     }

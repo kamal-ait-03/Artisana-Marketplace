@@ -4,8 +4,8 @@ import { artisans } from '../data/mockData';
 
 const SellerLandingPage = () => {
   const stats = [
-    { label: "Artisans", value: "500+" },
-    { label: "Sales", value: "24k+" },
+    { label: "Artisans", value: "50+" },
+    { label: "Sales", value: "10k+" },
     { label: "Cities", value: "12" },
     { label: "Fee 1st month", value: "0%" }
   ];
@@ -51,7 +51,7 @@ const SellerLandingPage = () => {
             Sell Your <span className="text-[#00BCD4]">Craft</span> to the World
           </h1>
           <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto font-medium">
-            Join 500+ Moroccan artisans already selling on Artisana and turn your passion into a global business.
+            Join 50+ Moroccan artisans already selling on Artisana and turn your passion into a global business.
           </p>
           <Link 
             to="/seller-register"

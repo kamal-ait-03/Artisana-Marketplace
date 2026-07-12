@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { artisans, mockProducts } from '../data/mockData';
 import ProductCard from '../components/ProductCard';
@@ -6,16 +6,12 @@ import { MapPin, Star, Package, ShoppingBag, MessageCircle, ArrowLeft } from 'lu
 
 const ArtisanProfilePage = () => {
   const { id } = useParams();
-  const [artisan, setArtisan] = useState(null);
-  const [artisanProducts, setArtisanProducts] = useState([]);
+  const artisan = artisans.find(a => a.id === id) || null;
+  const artisanProducts = artisan
+    ? mockProducts.filter(p => p.artisan.id === id)
+    : [];
 
   useEffect(() => {
-    const foundArtisan = artisans.find(a => a.id === id);
-    if (foundArtisan) {
-      setArtisan(foundArtisan);
-      const products = mockProducts.filter(p => p.artisan.id === id);
-      setArtisanProducts(products);
-    }
     window.scrollTo(0, 0);
   }, [id]);
 

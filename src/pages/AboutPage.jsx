@@ -91,10 +91,10 @@ const AboutPage = () => {
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { n: '500+', l: 'Artisans' },
+              { n: '50+', l: 'Artisans' },
               { n: '12', l: 'Cities' },
-              { n: '2 000+', l: 'Products' },
-              { n: '15 000+', l: 'Happy Clients' },
+              { n: '100+', l: 'Products' },
+              { n: '150+', l: 'Happy Clients' },
             ].map(s => (
               <div key={s.l}>
                 <p className="font-heading text-3xl md:text-4xl font-bold text-[var(--color-primary)]">{s.n}</p>
